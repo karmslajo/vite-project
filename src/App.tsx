@@ -37,7 +37,7 @@ function App() {
     const appUrl = albumUrl.replace(/^https?:\/\//, "gumpapp://");
 
     const storeUrl = {
-      ios: "https://apps.apple.com/us/app/facebook/id284882215",
+      ios: "https://en.wikipedia.org/wiki/App_Store_(Apple)",
       android:
         "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
