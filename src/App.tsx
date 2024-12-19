@@ -43,25 +43,18 @@ function App() {
     };
 
     // Create a hidden iframe to attempt to open the app
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = appUrl;
-    document.body.appendChild(iframe);
+    window.location.href = appUrl;
 
-    console.log("iframe", iframe);
     console.log("OS: ", os);
     console.log("App URL: ", appUrl);
+    console.log("Window Location Href: ", window.location.href);
 
     // Fallback to app store after a delay if the app isn't installed
     setTimeout(() => {
-      if (document.body.contains(iframe)) {
-        document.body.removeChild(iframe);
-      }
-
       if (os === "ios" || (os === "android" && document.hasFocus())) {
         window.location.href = storeUrl[os];
-        console.log("iframe", iframe);
         console.log("Store URL: ", storeUrl[os]);
+        console.log("Window Location Href Store: ", window.location.href);
         console.log("Redirecting to app store");
       }
     }, 1500);
@@ -75,7 +68,7 @@ function App() {
         )
       }
     >
-      Go to App V6
+      Go to App V7
     </button>
   );
 }
