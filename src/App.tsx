@@ -63,7 +63,7 @@ function App() {
   return (
     <button
       onClick={() =>
-        redirectToApp("gumpapp://pj.gump.gg/album/jetd/times-1734574991995")
+        redirectToApp("https://pj.gump.gg/album/jetd/times-1734574991995")
       }
     >
       Go to App V13
