@@ -66,7 +66,7 @@ function App() {
         )
       }
     >
-      Go to App
+      Go to App V1
     </button>
   );
 }
