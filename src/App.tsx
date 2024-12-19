@@ -42,7 +42,6 @@ function App() {
         "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
 
-    // Create a hidden iframe to attempt to open the app
     window.location.href = appUrl;
 
     console.log("OS: ", os);
@@ -52,6 +51,7 @@ function App() {
     // Fallback to app store after a delay if the app isn't installed
     setTimeout(() => {
       if ((os === "ios" || os === "android") && document.hasFocus()) {
+        alert("App not installed, redirecting to app store");
         window.location.href = storeUrl[os];
         console.log("Store URL: ", storeUrl[os]);
         console.log("Window Location Href Store: ", window.location.href);
@@ -66,7 +66,7 @@ function App() {
         redirectToApp("https://pj.gump.gg/album/jetd/times-1734574991995")
       }
     >
-      Go to App V13
+      Go to App V14
     </button>
   );
 }
