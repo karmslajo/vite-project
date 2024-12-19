@@ -15,9 +15,9 @@ function App() {
       return "macos";
     }
 
-    if (/linux/i.test(userAgent)) {
-      return "linux";
-    }
+    // if (/linux/i.test(userAgent)) {
+    //   return "linux";
+    // }
 
     if (/android/i.test(userAgent)) {
       return "android";
@@ -75,7 +75,7 @@ function App() {
         )
       }
     >
-      Go to App V4
+      Go to App V5
     </button>
   );
 }
