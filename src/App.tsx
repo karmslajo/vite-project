@@ -54,17 +54,17 @@ function App() {
 
     // Fallback to app store after a delay if the app isn't installed
     setTimeout(() => {
-      document.body.removeChild(iframe);
+      if (document.body.contains(iframe)) {
+        document.body.removeChild(iframe);
+      }
+
       if (os === "ios" || os === "android") {
-        iframe.src = storeUrl[os];
-        document.body.appendChild(iframe);
+        window.location.href = storeUrl[os];
         console.log("iframe", iframe);
         console.log("Store URL: ", storeUrl[os]);
         console.log("Redirecting to app store");
       }
     }, 1500);
-
-    document.body.removeChild(iframe);
   }
 
   return (
