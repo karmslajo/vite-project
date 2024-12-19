@@ -56,11 +56,15 @@ function App() {
     setTimeout(() => {
       document.body.removeChild(iframe);
       if (os === "ios" || os === "android") {
-        window.location.href = storeUrl[os];
+        iframe.src = storeUrl[os];
+        document.body.appendChild(iframe);
+        console.log("iframe", iframe);
         console.log("Store URL: ", storeUrl[os]);
         console.log("Redirecting to app store");
       }
     }, 1500);
+
+    document.body.removeChild(iframe);
   }
 
   return (
@@ -71,7 +75,7 @@ function App() {
         )
       }
     >
-      Go to App V3
+      Go to App V4
     </button>
   );
 }
