@@ -58,7 +58,7 @@ function App() {
         document.body.removeChild(iframe);
       }
 
-      if (os === "ios" || os === "android") {
+      if (os === "ios" || (os === "android" && document.hasFocus())) {
         window.location.href = storeUrl[os];
         console.log("iframe", iframe);
         console.log("Store URL: ", storeUrl[os]);
@@ -75,7 +75,7 @@ function App() {
         )
       }
     >
-      Go to App V5
+      Go to App V6
     </button>
   );
 }
