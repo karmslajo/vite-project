@@ -35,7 +35,7 @@ function App() {
     const appUrl = albumUrl.replace(/^https?:\/\//, "gumpapp://");
 
     const storeUrl = {
-      ios: "https://apps.apple.com/app/idYOUR_APP_ID",
+      ios: "https://apps.apple.com/us/app/facebook/id284882215",
       android:
         "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
@@ -45,16 +45,19 @@ function App() {
     iframe.style.display = "none";
     iframe.src = appUrl;
     document.body.appendChild(iframe);
-    console.log("iframe", iframe);
 
+    console.log("iframe", iframe);
     console.log("OS: ", os);
+    console.log("App URL: ", appUrl);
 
     // Fallback to app store after a delay if the app isn't installed
     setTimeout(() => {
       document.body.removeChild(iframe);
-
-      window.location.href = storeUrl["android"];
-      console.log("Redirecting to app store");
+      if (os === "ios" || os === "android") {
+        window.location.href = storeUrl[os];
+        console.log("Store URL: ", storeUrl[os]);
+        console.log("Redirecting to app store");
+      }
     }, 1500);
   }
 
@@ -66,7 +69,7 @@ function App() {
         )
       }
     >
-      Go to App V1
+      Go to App V2
     </button>
   );
 }
