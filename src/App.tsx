@@ -51,7 +51,6 @@ function App() {
     // Fallback to app store after a delay if the app isn't installed
     setTimeout(() => {
       if ((os === "ios" || os === "android") && document.hasFocus()) {
-        alert("App not installed, redirecting to app store");
         window.location.href = storeUrl[os];
         console.log("Store URL: ", storeUrl[os]);
         console.log("Window Location Href Store: ", window.location.href);
@@ -61,13 +60,16 @@ function App() {
   }
 
   return (
-    <button
-      onClick={() =>
-        redirectToApp("https://pj.gump.gg/album/jetd/times-1734574991995")
-      }
-    >
-      Go to App V14
-    </button>
+    <>
+      <button
+        onClick={() =>
+          redirectToApp("https://pj.gump.gg/album/jetd/times-1734574991995")
+        }
+      >
+        Go to App V14
+      </button>
+      <p>{navigator.userAgent}</p>
+    </>
   );
 }
 
