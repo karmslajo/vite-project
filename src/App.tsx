@@ -51,7 +51,7 @@ function App() {
 
     // Fallback to app store after a delay if the app isn't installed
     setTimeout(() => {
-      if (os === "ios" || (os === "android" && document.hasFocus())) {
+      if ((os === "ios" || os === "android") && document.hasFocus()) {
         window.location.href = storeUrl[os];
         console.log("Store URL: ", storeUrl[os]);
         console.log("Window Location Href Store: ", window.location.href);
