@@ -43,7 +43,7 @@ function App() {
     };
 
     // Create a hidden iframe to attempt to open the app
-    window.open(appUrl);
+    window.location.href = appUrl;
 
     console.log("OS: ", os);
     console.log("App URL: ", appUrl);
@@ -52,7 +52,7 @@ function App() {
     // Fallback to app store after a delay if the app isn't installed
     setTimeout(() => {
       if (os === "ios" || (os === "android" && document.hasFocus())) {
-        window.open(appUrl);
+        window.location.href = storeUrl[os];
         console.log("Store URL: ", storeUrl[os]);
         console.log("Window Location Href Store: ", window.location.href);
         console.log("Redirecting to app store");
@@ -68,7 +68,7 @@ function App() {
         )
       }
     >
-      Go to App V9
+      Go to App V10
     </button>
   );
 }
