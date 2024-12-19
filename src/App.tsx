@@ -5,6 +5,8 @@ function App() {
   function detectOperatingSystem() {
     const userAgent = navigator.userAgent;
 
+    console.log("User Agent: ", userAgent);
+
     if (/win/i.test(userAgent)) {
       return "windows";
     }
@@ -69,7 +71,7 @@ function App() {
         )
       }
     >
-      Go to App V2
+      Go to App V3
     </button>
   );
 }
