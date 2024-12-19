@@ -7,20 +7,20 @@ function App() {
 
     console.log("User Agent: ", userAgent);
 
-    if (/win/i.test(userAgent)) {
-      return "windows";
-    }
-
-    if (/macintosh|mac os x/i.test(userAgent)) {
-      return "macos";
-    }
-
     if (/android/i.test(userAgent)) {
       return "android";
     }
 
     if (/iPad|iPhone|iPod/.test(userAgent)) {
       return "ios";
+    }
+
+    if (/win/i.test(userAgent)) {
+      return "windows";
+    }
+
+    if (/macintosh|mac os x/i.test(userAgent)) {
+      return "macos";
     }
 
     if (/linux/i.test(userAgent)) {
