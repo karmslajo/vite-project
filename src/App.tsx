@@ -1,9 +1,10 @@
 import "./App.css";
 
 function App() {
+  const handleClick = () =>
+    (window.location.href =
+      "gumpapp://pia.gump-staging.net/album/alex/20241118kawagoe");
 
-  const handleClick = () => {}
-  
   return <button onClick={handleClick}>Go to App</button>;
 }
 
