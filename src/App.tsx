@@ -37,7 +37,7 @@ function App() {
     const storeUrl = {
       ios: "https://apps.apple.com/app/idYOUR_APP_ID",
       android:
-        "https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME",
+        "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
 
     // Create a hidden iframe to attempt to open the app
@@ -46,6 +46,8 @@ function App() {
     iframe.src = appUrl;
     document.body.appendChild(iframe);
     console.log("iframe", iframe);
+
+    console.log("OS: ", os);
 
     // Fallback to app store after a delay if the app isn't installed
     setTimeout(() => {
