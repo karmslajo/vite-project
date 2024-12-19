@@ -63,12 +63,10 @@ function App() {
   return (
     <button
       onClick={() =>
-        redirectToApp(
-          "gumpapp://pia.gump-staging.net/album/alex/20241118kawagoe"
-        )
+        redirectToApp("gumpapp://pj.gump.gg/album/jetd/times-1734574991995")
       }
     >
-      Go to App V12
+      Go to App V13
     </button>
   );
 }
