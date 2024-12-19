@@ -15,16 +15,16 @@ function App() {
       return "macos";
     }
 
-    if (/linux/i.test(userAgent)) {
-      return "linux";
-    }
-
     if (/android/i.test(userAgent)) {
       return "android";
     }
 
     if (/iPad|iPhone|iPod/.test(userAgent)) {
       return "ios";
+    }
+
+    if (/linux/i.test(userAgent)) {
+      return "linux";
     }
 
     return "unknown";
@@ -68,7 +68,7 @@ function App() {
         )
       }
     >
-      Go to App V11
+      Go to App V12
     </button>
   );
 }
