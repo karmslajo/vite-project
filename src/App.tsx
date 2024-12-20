@@ -38,8 +38,8 @@ function App() {
 
     const storeUrl = {
       // ios: "itms-apps://apps.apple.com/us/app/facebook/id284882215",
-      // ios: "https://apps.apple.com/us/app/facebook/id284882215",
-      ios: "https://www.wikipedia.org/",
+      ios: "https://apps.apple.com/us/app/facebook/id284882215",
+      // ios: "https://www.wikipedia.org/",
       android:
         "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
@@ -68,7 +68,7 @@ function App() {
           redirectToApp("https://pj.gump.gg/album/jetd/times-1734574991995")
         }
       >
-        Go to App V14
+        Go to App V15
       </button>
       <p>{navigator.userAgent}</p>
     </>
