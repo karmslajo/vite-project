@@ -58,7 +58,7 @@ function App() {
         console.log("Window Location Href Store: ", window.location.href);
         console.log("Redirecting to app store");
       }
-    }, 1500);
+    }, 1000);
   }
 
   return (
@@ -68,7 +68,16 @@ function App() {
           redirectToApp("https://pj.gump.gg/album/jetd/times-1734574991995")
         }
       >
-        Go to App V15
+        Go to App With Production Album V15
+      </button>
+      <button
+        onClick={() =>
+          redirectToApp(
+            "https://pia.gump-staging.net/album/sun-life-fun-run/pok%C3%A9mon-run-hong-kong-2024"
+          )
+        }
+      >
+        Go to App With Staging Album V15
       </button>
       <p>{navigator.userAgent}</p>
     </>
