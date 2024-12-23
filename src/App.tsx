@@ -65,10 +65,26 @@ function App() {
     <>
       <button
         onClick={() =>
-          redirectToApp("https://pj.gump.gg/album/jetd/times-1734574991995")
+          redirectToApp(
+            "https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043"
+          )
         }
       >
-        Go to App With Production Album V15
+        1 Go to App With Production Album V15
+      </button>
+      <button
+        onClick={() =>
+          redirectToApp("https://piaayopela.gump.gg/album/travel/travel")
+        }
+      >
+        2 Go to App With Production Album V15
+      </button>
+      <button
+        onClick={() =>
+          redirectToApp("https://piaayopela.gump.gg/album/cats-and-dogs")
+        }
+      >
+        3 Go to App With Production Album V15
       </button>
       <button
         onClick={() =>
