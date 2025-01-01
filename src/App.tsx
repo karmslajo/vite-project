@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import "./App.css";
 
 function App() {
@@ -29,7 +28,6 @@ function App() {
 
     return "unknown";
   }
-
   function redirectToApp(albumUrl: string | null) {
     const os = detectOperatingSystem();
 
@@ -37,28 +35,34 @@ function App() {
     const appUrl = albumUrl.replace(/^https?:\/\//, "gumpapp://");
 
     const storeUrl = {
-      // ios: "itms-apps://apps.apple.com/us/app/facebook/id284882215",
       ios: "https://apps.apple.com/us/app/facebook/id284882215",
-      // ios: "https://www.wikipedia.org/",
-      android:
-        "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
+      android: "https://play.google.com/store/apps/details?id=com.gump.android",
     };
+
+    let userLeftPage = false;
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        userLeftPage = true;
+      }
+    };
+
+    document.addEventListener("visibilityChange", onVisibilityChange);
 
     window.location.href = appUrl;
 
-    console.log("OS: ", os);
-    console.log("App URL: ", appUrl);
-    console.log("Window Location Href: ", window.location.href);
-
-    // Fallback to app store after a delay if the app isn't installed
-    setTimeout(() => {
-      if ((os === "ios" || os === "android") && document.hasFocus()) {
+    const fallbackTimeout = setTimeout(() => {
+      if (!userLeftPage && (os === "ios" || os === "android")) {
         window.location.href = storeUrl[os];
-        console.log("Store URL: ", storeUrl[os]);
-        console.log("Window Location Href Store: ", window.location.href);
-        console.log("Redirecting to app store");
       }
     }, 1000);
+
+    const cleanup = () => {
+      clearTimeout(fallbackTimeout);
+      document.removeEventListener("visibilityChange", onVisibilityChange);
+    };
+
+    window.addEventListener("beforeunload", cleanup);
   }
 
   return (
