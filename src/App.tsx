@@ -36,28 +36,48 @@ function App() {
     const appUrl = albumUrl.replace(/^https?:\/\//, "gumpapp://");
 
     const storeUrl = {
-      // ios: "itms-apps://apps.apple.com/us/app/facebook/id284882215",
       ios: "https://apps.apple.com/us/app/facebook/id284882215",
-      // ios: "https://www.wikipedia.org/",
       android:
         "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
 
+    let appLikelyOpened = false;
+    const fallbackDelay = 1000; // Delay before redirecting to the store
+
+    // Redirect to the app
     window.location.href = appUrl;
 
-    console.log("OS: ", os);
-    console.log("App URL: ", appUrl);
-    console.log("Window Location Href: ", window.location.href);
-
-    // Fallback to app store after a delay if the app isn't installed
-    setTimeout(() => {
-      if ((os === "ios" || os === "android") && document.hasFocus()) {
-        window.location.href = storeUrl[os];
-        console.log("Store URL: ", storeUrl[os]);
-        console.log("Window Location Href Store: ", window.location.href);
-        console.log("Redirecting to app store");
+    // Listen for visibility and pagehide events
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        // User left the browser, likely opened the app
+        appLikelyOpened = true;
       }
-    }, 1000);
+    };
+
+    const onPageHide = () => {
+      // User navigated away from the page
+      appLikelyOpened = true;
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pagehide", onPageHide);
+
+    // Fallback to redirect to the store if the app isn't installed
+    const fallbackTimeout = setTimeout(() => {
+      if (!appLikelyOpened && (os === "ios" || os === "android")) {
+        window.location.href = storeUrl[os];
+      }
+    }, fallbackDelay);
+
+    // Cleanup logic to avoid memory leaks
+    const cleanup = () => {
+      clearTimeout(fallbackTimeout);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pagehide", onPageHide);
+    };
+
+    window.addEventListener("beforeunload", cleanup);
   }
 
   return (
@@ -95,7 +115,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V16</p>
+      <p>V17</p>
     </>
   );
 }
