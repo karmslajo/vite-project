@@ -46,11 +46,19 @@ function App() {
     // Redirect to the app
     window.location.href = appUrl;
 
+    // Listen for visibility and pagehide events
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        // User left the browser, likely opened the app
+        appLikelyOpened = true;
+      }
+    };
     const onPageHide = () => {
       // User navigated away from the page
       appLikelyOpened = true;
     };
 
+    document.addEventListener("visibilitychange", onVisibilityChange);
     window.addEventListener("pagehide", onPageHide);
 
     // Fallback to redirect to the store if the app isn't installed
@@ -63,6 +71,7 @@ function App() {
     // Cleanup logic to avoid memory leaks
     const cleanup = () => {
       clearTimeout(fallbackTimeout);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("pagehide", onPageHide);
     };
 
@@ -104,7 +113,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V18</p>
+      <p>V19</p>
     </>
   );
 }
