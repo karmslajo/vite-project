@@ -37,8 +37,7 @@ function App() {
 
     const storeUrl = {
       ios: "https://apps.apple.com/us/app/facebook/id284882215",
-      android:
-        "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
+      android: "https://play.google.com/store/apps/details?id=com.gump.android",
     };
 
     let appLikelyOpened = false;
@@ -107,7 +106,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V20</p>
+      <p>V21</p>
     </>
   );
 }
