@@ -36,39 +36,28 @@ function App() {
     const appUrl = albumUrl.replace(/^https?:\/\//, "gumpapp://");
 
     const storeUrl = {
+      // ios: "itms-apps://apps.apple.com/us/app/facebook/id284882215",
       ios: "https://apps.apple.com/us/app/facebook/id284882215",
-      android: "https://play.google.com/store/apps/details?id=com.gump.android",
+      // ios: "https://www.wikipedia.org/",
+      android:
+        "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
 
-    let appLikelyOpened = false;
-
-    // Redirect to the app
     window.location.href = appUrl;
 
-    // Listen for visibility and pagehide events
-    const onVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        // User left the browser, likely opened the app
-        appLikelyOpened = true;
-      }
-    };
+    console.log("OS: ", os);
+    console.log("App URL: ", appUrl);
+    console.log("Window Location Href: ", window.location.href);
 
-    document.addEventListener("visibilitychange", onVisibilityChange);
-
-    // Fallback to redirect to the store if the app isn't installed
-    const fallbackTimeout = setTimeout(() => {
-      if (!appLikelyOpened && (os === "ios" || os === "android")) {
+    // Fallback to app store after a delay if the app isn't installed
+    setTimeout(() => {
+      if ((os === "ios" || os === "android") && document.hasFocus()) {
         window.location.href = storeUrl[os];
+        console.log("Store URL: ", storeUrl[os]);
+        console.log("Window Location Href Store: ", window.location.href);
+        console.log("Redirecting to app store");
       }
     }, 1000);
-
-    // Cleanup logic to avoid memory leaks
-    const cleanup = () => {
-      clearTimeout(fallbackTimeout);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-    };
-
-    window.addEventListener("beforeunload", cleanup);
   }
 
   return (
@@ -106,7 +95,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V21</p>
+      <p>V22</p>
     </>
   );
 }
