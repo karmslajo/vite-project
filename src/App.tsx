@@ -54,16 +54,16 @@ function App() {
 
     // Fallback to app store after a delay if the app isn't installed
     setTimeout(() => {
-      // Remove the iframe after the attempt
-      document.body.removeChild(iframe);
-
       if ((os === "ios" || os === "android") && document.hasFocus()) {
         window.location.href = storeUrl[os];
         console.log("Store URL: ", storeUrl[os]);
         console.log("Window Location Href Store: ", window.location.href);
         console.log("Redirecting to app store");
       }
-    }, 1000);
+
+      // Remove the iframe after the attempt
+      document.body.removeChild(iframe);
+    }, 1500);
   }
 
   return (
@@ -101,7 +101,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V23</p>
+      <p>V24</p>
     </>
   );
 }
