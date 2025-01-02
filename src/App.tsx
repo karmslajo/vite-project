@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import "./App.css";
 
 function App() {
@@ -29,59 +28,42 @@ function App() {
 
     return "unknown";
   }
+
   function redirectToApp(albumUrl: string | null) {
     const os = detectOperatingSystem();
 
     if (!albumUrl) return;
-
     const appUrl = albumUrl.replace(/^https?:\/\//, "gumpapp://");
 
     const storeUrl = {
+      // ios: "itms-apps://apps.apple.com/us/app/facebook/id284882215",
       ios: "https://apps.apple.com/us/app/facebook/id284882215",
+      // ios: "https://www.wikipedia.org/",
       android:
         "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
+    // Create an iframe to silently attempt to open the app
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = appUrl;
+    document.body.appendChild(iframe);
 
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    console.log("OS: ", os);
+    console.log("App URL: ", appUrl);
+    console.log("Window Location Href: ", window.location.href);
 
-    let timeout: any;
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        clearTimeout(timeout);
-        document.removeEventListener(
-          "visibilitychange",
-          handleVisibilityChange
-        );
+    // Fallback to app store after a delay if the app isn't installed
+    setTimeout(() => {
+      if ((os === "ios" || os === "android") && document.hasFocus()) {
+        window.location.href = storeUrl[os];
+        console.log("Store URL: ", storeUrl[os]);
+        console.log("Window Location Href Store: ", window.location.href);
+        console.log("Redirecting to app store");
       }
-    };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    if (isSafari && os === "ios") {
-      // Use `window.open` to attempt opening the app for Safari
-      window.open(appUrl, "_self");
-
-      timeout = setTimeout(() => {
-        if (document.hasFocus()) {
-          window.location.href = storeUrl.ios;
-        }
-      }, 1000);
-    } else {
-      // Use iframe for other browsers
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appUrl;
-      document.body.appendChild(iframe);
-
-      timeout = setTimeout(() => {
-        if (os in storeUrl && document.hasFocus()) {
-          window.location.href = storeUrl[os as keyof typeof storeUrl];
-        }
-
-        document.body.removeChild(iframe);
-      }, 1000);
-    }
+      // Remove the iframe after the attempt
+      document.body.removeChild(iframe);
+    }, 1500);
   }
 
   return (
@@ -119,7 +101,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V25</p>
+      <p>V26</p>
     </>
   );
 }
