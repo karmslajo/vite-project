@@ -113,7 +113,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V26</p>
+      <p>V27</p>
     </>
   );
 }
