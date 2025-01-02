@@ -42,8 +42,11 @@ function App() {
       android:
         "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
-
-    window.location.href = appUrl;
+    // Create an iframe to silently attempt to open the app
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = appUrl;
+    document.body.appendChild(iframe);
 
     console.log("OS: ", os);
     console.log("App URL: ", appUrl);
@@ -51,6 +54,9 @@ function App() {
 
     // Fallback to app store after a delay if the app isn't installed
     setTimeout(() => {
+      // Remove the iframe after the attempt
+      document.body.removeChild(iframe);
+
       if ((os === "ios" || os === "android") && document.hasFocus()) {
         window.location.href = storeUrl[os];
         console.log("Store URL: ", storeUrl[os]);
@@ -95,7 +101,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V22</p>
+      <p>V23</p>
     </>
   );
 }
