@@ -34,6 +34,7 @@ function App() {
 
     if (!albumUrl) return;
     const appUrl = albumUrl.replace(/^https?:\/\//, "gumpapp://");
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     const storeUrl = {
       // ios: "itms-apps://apps.apple.com/us/app/facebook/id284882215",
@@ -42,28 +43,39 @@ function App() {
       android:
         "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
-    // Create an iframe to silently attempt to open the app
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = appUrl;
-    document.body.appendChild(iframe);
 
-    console.log("OS: ", os);
-    console.log("App URL: ", appUrl);
-    console.log("Window Location Href: ", window.location.href);
+    if (isSafari) {
+      window.location.href = appUrl;
 
-    // Fallback to app store after a delay if the app isn't installed
-    setTimeout(() => {
-      if ((os === "ios" || os === "android") && document.hasFocus()) {
-        window.location.href = storeUrl[os];
-        console.log("Store URL: ", storeUrl[os]);
-        console.log("Window Location Href Store: ", window.location.href);
-        console.log("Redirecting to app store");
-      }
+      setTimeout(() => {
+        if (document.hasFocus() && (os === "ios" || os === "android")) {
+          window.location.href = storeUrl[os];
+        }
+      }, 2500);
+    } else {
+      // Create an iframe to silently attempt to open the app
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appUrl;
+      document.body.appendChild(iframe);
 
-      // Remove the iframe after the attempt
-      document.body.removeChild(iframe);
-    }, 1500);
+      console.log("OS: ", os);
+      console.log("App URL: ", appUrl);
+      console.log("Window Location Href: ", window.location.href);
+
+      // Fallback to app store after a delay if the app isn't installed
+      setTimeout(() => {
+        if ((os === "ios" || os === "android") && document.hasFocus()) {
+          window.location.href = storeUrl[os];
+          console.log("Store URL: ", storeUrl[os]);
+          console.log("Window Location Href Store: ", window.location.href);
+          console.log("Redirecting to app store");
+        }
+
+        // Remove the iframe after the attempt
+        document.body.removeChild(iframe);
+      }, 1500);
+    }
   }
 
   return (
