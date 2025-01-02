@@ -34,7 +34,7 @@ function App() {
 
     if (!albumUrl) return;
     const appUrl = albumUrl.replace(/^https?:\/\//, "gumpapp://");
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    // const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     const storeUrl = {
       // ios: "itms-apps://apps.apple.com/us/app/facebook/id284882215",
@@ -44,11 +44,11 @@ function App() {
         "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
     };
 
-    if (isSafari) {
-      window.location.href = appUrl;
+    if (os === "ios") {
+      window.open(appUrl, "_self");
 
       setTimeout(() => {
-        if (document.hasFocus() && (os === "ios" || os === "android")) {
+        if (document.hasFocus()) {
           window.location.href = storeUrl[os];
         }
       }, 2500);
@@ -65,7 +65,7 @@ function App() {
 
       // Fallback to app store after a delay if the app isn't installed
       setTimeout(() => {
-        if ((os === "ios" || os === "android") && document.hasFocus()) {
+        if (os === "android" && document.hasFocus()) {
           window.location.href = storeUrl[os];
           console.log("Store URL: ", storeUrl[os]);
           console.log("Window Location Href Store: ", window.location.href);
@@ -74,7 +74,7 @@ function App() {
 
         // Remove the iframe after the attempt
         document.body.removeChild(iframe);
-      }, 1500);
+      }, 2500);
     }
   }
 
@@ -113,7 +113,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V27</p>
+      <p>V28</p>
     </>
   );
 }
