@@ -45,7 +45,7 @@ function App() {
     };
 
     if (os === "ios") {
-      window.open(appUrl, "_self");
+      window.location.href = appUrl;
 
       setTimeout(() => {
         if (document.hasFocus()) {
@@ -113,7 +113,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V28</p>
+      <p>V29</p>
     </>
   );
 }
