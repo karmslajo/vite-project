@@ -29,26 +29,15 @@ function App() {
       android: "https://play.google.com/store/apps/details?id=com.gump.android",
     };
 
-    if (isSafari) {
-      window.location.href = appUrl;
-      setTimeout(() => {
+    window.location.href = appUrl;
+    setTimeout(
+      () => {
         if (document.hasFocus() && device && storeUrl[device]) {
           window.location.href = storeUrl[device];
         }
-      }, 4000);
-    } else {
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appUrl;
-      document.body.appendChild(iframe);
-      document.body.removeChild(iframe);
-
-      setTimeout(() => {
-        if (document.hasFocus() && device && storeUrl[device]) {
-          window.location.href = storeUrl[device];
-        }
-      }, 1500);
-    }
+      },
+      isSafari ? 3000 : 2000
+    );
   }
 
   // useEffect(() => {
@@ -99,7 +88,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V36</p>
+      <p>V38</p>
       {/* <p>Chrome: {isChrome}</p>
       <p>Safari: {isSafari}</p> */}
     </>
