@@ -29,43 +29,40 @@ function App() {
     return "unknown";
   }
 
-  function redirectToApp(albumUrl: string | null) {
-    const os = detectOperatingSystem();
-
-    if (!albumUrl) return;
-    const appUrl = albumUrl.replace(/^https?:\/\//, "gumpapp://");
-    // const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  function redirectToApp(albumLink: string) {
+    const device = detectOperatingSystem();
+    const appUrl = albumLink.replace(/^https?:\/\//, "gumpapp://");
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     const storeUrl = {
-      // ios: "itms-apps://apps.apple.com/us/app/facebook/id284882215",
+      windows: "",
       ios: "https://apps.apple.com/us/app/facebook/id284882215",
-      // ios: "https://www.wikipedia.org/",
       android:
         "https://play.google.com/store/apps/details?id=com.gump.android&hl=en-US&ah=5GhbhJoMQ8b3ge9xy2-402N9bck",
+      macos: "",
+      linux: "",
+      unknown: "",
     };
 
-    // Create an iframe to silently attempt to open the app
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = appUrl;
-    document.body.appendChild(iframe);
-
-    console.log("OS: ", os);
-    console.log("App URL: ", appUrl);
-    console.log("Window Location Href: ", window.location.href);
-
-    // Fallback to app store after a delay if the app isn't installed
-    setTimeout(() => {
-      if (os === "android" && document.hasFocus()) {
-        window.location.href = storeUrl[os];
-        console.log("Store URL: ", storeUrl[os]);
-        console.log("Window Location Href Store: ", window.location.href);
-        console.log("Redirecting to app store");
-      }
-
-      // Remove the iframe after the attempt
-      document.body.removeChild(iframe);
-    }, 2500);
+    if (isSafari) {
+      window.location.href = appUrl;
+      setTimeout(() => {
+        if (document.hasFocus() && storeUrl[device]) {
+          window.location.href = storeUrl[device];
+        }
+      }, 4000);
+    } else {
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appUrl;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        if (document.hasFocus() && storeUrl[device]) {
+          window.location.href = storeUrl[device];
+        }
+        document.body.removeChild(iframe);
+      }, 1500);
+    }
   }
 
   return (
@@ -103,7 +100,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V30</p>
+      <p>V31</p>
     </>
   );
 }
