@@ -1,6 +1,10 @@
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
+  const [isChrome, setIsChrome] = useState(false);
+  const [isSafari, setIsSafari] = useState(false);
+
   function detectOperatingSystem() {
     const userAgent = navigator.userAgent;
 
@@ -54,16 +58,18 @@ function App() {
     }, 3000);
   }
 
-  const userAgent = navigator.userAgent;
+  useEffect(() => {
+    const userAgent = navigator.userAgent;
 
-  // Detect Chrome
-  const chromeAgent = userAgent.indexOf("Chrome") > -1;
+    // Detect Chrome
+    setIsChrome(userAgent.indexOf("Chrome") > -1);
 
-  // Detect Safari
-  let safariAgent = userAgent.indexOf("Safari") > -1;
+    // Detect Safari
+    setIsSafari(userAgent.indexOf("Safari") > -1);
 
-  // Discard Safari since it also matches Chrome
-  if (chromeAgent && safariAgent) safariAgent = false;
+    // Discard Safari since it also matches Chrome
+    if (isChrome && isSafari) setIsSafari(false);
+  }, [isChrome, isSafari]);
 
   return (
     <>
@@ -100,9 +106,9 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V33</p>
-      <p>Chrome: {chromeAgent}</p>
-      <p>Safari: {safariAgent}</p>
+      <p>V34</p>
+      <p>Chrome: {isChrome}</p>
+      <p>Safari: {isSafari}</p>
     </>
   );
 }
