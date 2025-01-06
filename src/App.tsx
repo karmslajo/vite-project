@@ -32,7 +32,6 @@ function App() {
   function redirectToApp(albumLink: string) {
     const device = detectOperatingSystem();
     const appUrl = albumLink.replace(/^https?:\/\//, "gumpapp://");
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     const storeUrl = {
       windows: "",
@@ -43,25 +42,16 @@ function App() {
       unknown: "",
     };
 
-    if (isSafari) {
-      window.location.href = appUrl;
-      setTimeout(() => {
-        if (document.hasFocus() && storeUrl[device]) {
-          window.location.href = storeUrl[device];
-        }
-      }, 4000);
-    } else {
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appUrl;
-      document.body.appendChild(iframe);
-      setTimeout(() => {
-        if (document.hasFocus() && storeUrl[device]) {
-          window.location.href = storeUrl[device];
-        }
-        document.body.removeChild(iframe);
-      }, 1500);
-    }
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = appUrl;
+    document.body.appendChild(iframe);
+    setTimeout(() => {
+      if (document.hasFocus() && storeUrl[device]) {
+        window.location.href = storeUrl[device];
+      }
+      document.body.removeChild(iframe);
+    }, 3000);
   }
 
   return (
@@ -99,7 +89,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V31</p>
+      <p>V32</p>
     </>
   );
 }
