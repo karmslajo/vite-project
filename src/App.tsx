@@ -54,6 +54,17 @@ function App() {
     }, 3000);
   }
 
+  const userAgent = navigator.userAgent;
+
+  // Detect Chrome
+  const chromeAgent = userAgent.indexOf("Chrome") > -1;
+
+  // Detect Safari
+  let safariAgent = userAgent.indexOf("Safari") > -1;
+
+  // Discard Safari since it also matches Chrome
+  if (chromeAgent && safariAgent) safariAgent = false;
+
   return (
     <>
       <button
@@ -89,7 +100,9 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V32</p>
+      <p>V33</p>
+      <p>Chrome: {chromeAgent}</p>
+      <p>Safari: {safariAgent}</p>
     </>
   );
 }
