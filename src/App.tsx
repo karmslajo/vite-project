@@ -106,7 +106,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V39</p>
+      <p>V40</p>
       {/* <p>Chrome: {isChrome}</p>
       <p>Safari: {isSafari}</p> */}
     </>
