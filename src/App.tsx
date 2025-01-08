@@ -5,57 +5,26 @@ function App() {
   // const [isChrome, setIsChrome] = useState(false);
   // const [isSafari, setIsSafari] = useState(false);
 
-  function detectOperatingSystem() {
-    const userAgent = navigator.userAgent;
+  // function detectOperatingSystem() {
+  //   const userAgent = navigator.userAgent;
 
-    if (/android/i.test(userAgent)) {
-      return "android";
-    }
+  //   if (/android/i.test(userAgent)) {
+  //     return "android";
+  //   }
 
-    if (/iPad|iPhone|iPod/.test(userAgent)) {
-      return "ios";
-    }
-  }
+  //   if (/iPad|iPhone|iPod/.test(userAgent)) {
+  //     return "ios";
+  //   }
+  // }
 
   function redirectToApp(albumLink: string) {
-    const device = detectOperatingSystem();
+    // const device = detectOperatingSystem();
     const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=${albumLink}`;
-    const isSafari = /^((?!chrome|android|crios).)*safari/i.test(
-      navigator.userAgent
-    );
+    // const isSafari = /^((?!chrome|android|crios).)*safari/i.test(
+    //   navigator.userAgent
+    // );
 
-    const storeUrl = {
-      ios: "https://apps.apple.com/us/app/facebook/id284882215",
-      android: "https://play.google.com/store/apps/details?id=com.gump.android",
-    };
-
-    if (isSafari) {
-      const link = document.createElement("a");
-      link.setAttribute("href", appUrl);
-      link.style.display = "none";
-      document.body.appendChild(link);
-
-      link.click();
-      document.body.removeChild(link);
-
-      setTimeout(() => {
-        if (document.hasFocus() && device && storeUrl[device]) {
-          window.location.href = storeUrl[device];
-        }
-      }, 3000);
-    } else {
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appUrl;
-      document.body.appendChild(iframe);
-
-      setTimeout(() => {
-        if (document.hasFocus() && device && storeUrl[device]) {
-          window.location.href = storeUrl[device];
-        }
-        document.body.removeChild(iframe);
-      }, 2000);
-    }
+    window.location.href = appUrl;
   }
 
   useEffect(() => {
@@ -120,7 +89,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V45</p>
+      <p>V46</p>
       {/* <p>Chrome: {isChrome}</p>
       <p>Safari: {isSafari}</p> */}
     </>
