@@ -72,9 +72,6 @@ function App() {
     document.head.appendChild(metaTag);
 
     // Cleanup function to remove the meta tag when the component unmounts
-    return () => {
-      document.head.removeChild(metaTag);
-    };
   }, []);
 
   // useEffect(() => {
@@ -125,7 +122,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V43</p>
+      <p>V44</p>
       {/* <p>Chrome: {isChrome}</p>
       <p>Safari: {isSafari}</p> */}
     </>
