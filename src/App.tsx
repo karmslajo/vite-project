@@ -5,17 +5,17 @@ function App() {
   // const [isChrome, setIsChrome] = useState(false);
   // const [isSafari, setIsSafari] = useState(false);
 
-  // function detectOperatingSystem() {
-  //   const userAgent = navigator.userAgent;
+  function detectOperatingSystem() {
+    const userAgent = navigator.userAgent;
 
-  //   if (/android/i.test(userAgent)) {
-  //     return "android";
-  //   }
+    if (/android/i.test(userAgent)) {
+      return "android";
+    }
 
-  //   if (/iPad|iPhone|iPod/.test(userAgent)) {
-  //     return "ios";
-  //   }
-  // }
+    if (/iPad|iPhone|iPod/.test(userAgent)) {
+      return "ios";
+    }
+  }
 
   function redirectToApp(albumLink: string) {
     // const device = detectOperatingSystem();
@@ -25,6 +25,39 @@ function App() {
     // );
 
     window.location.href = appUrl;
+  }
+
+  function redirectToAppOrig(albumLink: string) {
+    const device = detectOperatingSystem();
+    const appUrl = albumLink.replace(/^https?:\/\//, "gumpapp://");
+    const isSafari = /^((?!chrome|android|crios).)*safari/i.test(
+      navigator.userAgent
+    );
+
+    const storeUrl = {
+      windows: "",
+      ios: "https://apps.apple.com/us/app/facebook/id284882215",
+      android: "https://play.google.com/store/apps/details?id=com.gump.android",
+    };
+    if (isSafari) {
+      window.location.href = appUrl;
+      setTimeout(() => {
+        if (document.hasFocus() && device && storeUrl[device]) {
+          window.location.href = storeUrl[device];
+        }
+      }, 3000);
+    } else {
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appUrl;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        if (document.hasFocus() && device && storeUrl[device]) {
+          window.location.href = storeUrl[device];
+        }
+        document.body.removeChild(iframe);
+      }, 2000);
+    }
   }
 
   useEffect(() => {
@@ -74,10 +107,10 @@ function App() {
       </button>
       <button
         onClick={() =>
-          redirectToApp("https://piaayopela.gump.gg/album/cats-and-dogs")
+          redirectToAppOrig("https://piaayopela.gump.gg/album/cats-and-dogs")
         }
       >
-        3 Go to App With Production Album
+        3 Orig Go to App With Production Album
       </button>
       <button
         onClick={() =>
@@ -86,10 +119,28 @@ function App() {
           )
         }
       >
-        Go to App With Staging Album
+        1 Go to App With Staging Album
+      </button>
+      <button
+        onClick={() =>
+          redirectToApp(
+            "https://pia.gump-staging.net/album/alex/20241118kawagoe"
+          )
+        }
+      >
+        2 Go to App With Staging Album
+      </button>
+      <button
+        onClick={() =>
+          redirectToAppOrig(
+            "https://pia.gump-staging.net/album/shinjuku-gyoen/202403271000shinjuku-gyoen-1734305812118"
+          )
+        }
+      >
+        3 Orig Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V46</p>
+      <p>V47</p>
       {/* <p>Chrome: {isChrome}</p>
       <p>Safari: {isSafari}</p> */}
     </>
