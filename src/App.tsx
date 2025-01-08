@@ -62,16 +62,16 @@ function App() {
     // Create a meta tag
     const metaTag = document.createElement("meta");
     metaTag.name = "apple-itunes-app";
-
-    const appId = "1064216828";
-    const appArgument =
-      "https://www.reddit.com/r/nba/comments/1hw70t6/highlight_lebron_james_decides_to_stop_passing/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button";
-    metaTag.content = `app-id=${appId}, app-argument=${appArgument}`;
+    metaTag.content =
+      "app-id=1064216828, app-argument=https://www.reddit.com/r/nba/comments/1hw70t6/highlight_lebron_james_decides_to_stop_passing/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button";
 
     // Add the meta tag to the <head>
     document.head.appendChild(metaTag);
 
     // Cleanup function to remove the meta tag when the component unmounts
+    return () => {
+      document.head.removeChild(metaTag);
+    };
   }, []);
 
   // useEffect(() => {
@@ -122,7 +122,7 @@ function App() {
         Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V44</p>
+      <p>V45</p>
       {/* <p>Chrome: {isChrome}</p>
       <p>Safari: {isSafari}</p> */}
     </>
