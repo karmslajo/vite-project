@@ -19,7 +19,7 @@ function App() {
 
   function redirectToApp(albumLink: string) {
     const device = detectOperatingSystem();
-    const appUrl = albumLink.replace(/^https?:\/\//, "gumpapp://");
+    const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=${albumLink}`;
     const isSafari = /^((?!chrome|android|crios).)*safari/i.test(
       navigator.userAgent
     );
@@ -65,10 +65,8 @@ function App() {
     metaTag.content =
       "app-id=1064216828, app-argument=https://www.reddit.com/r/nba/comments/1hw70t6/highlight_lebron_james_decides_to_stop_passing/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button";
 
-    // Add the meta tag to the <head>
     document.head.appendChild(metaTag);
 
-    // Cleanup function to remove the meta tag when the component unmounts
     return () => {
       document.head.removeChild(metaTag);
     };
