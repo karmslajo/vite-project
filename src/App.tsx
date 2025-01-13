@@ -62,7 +62,8 @@ function App() {
     // Create a meta tag
     const albumLink =
       "https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043";
-    const appUrl = albumLink.replace(/^https?:\/\//, "gumpapp://");
+    // const appUrl = albumLink.replace(/^https?:\/\//, "gumpapp://");
+    const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=${albumLink}`;
     const metaTag = document.createElement("meta");
     metaTag.name = "apple-itunes-app";
     metaTag.content = `app-id=6670382932, app-argument=${appUrl}`;
