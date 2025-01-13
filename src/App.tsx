@@ -2,9 +2,6 @@ import { useEffect } from "react";
 import "./App.css";
 
 function App() {
-  // const [isChrome, setIsChrome] = useState(false);
-  // const [isSafari, setIsSafari] = useState(false);
-
   function detectOperatingSystem() {
     const userAgent = navigator.userAgent;
 
@@ -63,10 +60,12 @@ function App() {
 
   useEffect(() => {
     // Create a meta tag
+    const albumLink =
+      "https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043";
+    const appUrl = albumLink.replace(/^https?:\/\//, "gumpapp://");
     const metaTag = document.createElement("meta");
     metaTag.name = "apple-itunes-app";
-    metaTag.content =
-      "app-id=1064216828, app-argument=https://www.reddit.com/r/nba/comments/1hw70t6/highlight_lebron_james_decides_to_stop_passing/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button";
+    metaTag.content = `app-id=6670382932, app-argument=${appUrl}`;
 
     document.head.appendChild(metaTag);
 
@@ -74,19 +73,6 @@ function App() {
       document.head.removeChild(metaTag);
     };
   }, []);
-
-  // useEffect(() => {
-  //   const userAgent = navigator.userAgent;
-
-  //   // Detect Chrome
-  //   setIsChrome(userAgent.indexOf("Chrome") > -1);
-
-  //   // Detect Safari
-  //   setIsSafari(userAgent.indexOf("Safari") > -1);
-
-  //   // Discard Safari since it also matches Chrome
-  //   if (isChrome && isSafari) setIsSafari(false);
-  // }, [isChrome, isSafari]);
 
   return (
     <>
@@ -141,9 +127,7 @@ function App() {
         3 Orig Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V49</p>
-      {/* <p>Chrome: {isChrome}</p>
-      <p>Safari: {isSafari}</p> */}
+      <p>V50</p>
     </>
   );
 }
