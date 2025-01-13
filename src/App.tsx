@@ -155,7 +155,7 @@ function App() {
         Test Btn
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V54</p>
+      <p>V55</p>
     </>
   );
 }
