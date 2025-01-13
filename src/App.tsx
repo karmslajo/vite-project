@@ -19,8 +19,8 @@ function App() {
 
   function redirectToApp(albumLink: string) {
     // const device = detectOperatingSystem();
-    const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?albumLink=${albumLink}`;
-    // const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=${albumLink}`;
+    // const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?albumLink=${albumLink}`;
+    const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=${albumLink}`;
     // const isSafari = /^((?!chrome|android|crios).)*safari/i.test(
     //   navigator.userAgent
     // );
@@ -141,7 +141,7 @@ function App() {
         3 Orig Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V47</p>
+      <p>V48</p>
       {/* <p>Chrome: {isChrome}</p>
       <p>Safari: {isSafari}</p> */}
     </>
