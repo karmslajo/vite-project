@@ -1,5 +1,6 @@
 // import { useEffect } from "react";
 import "./App.css";
+import customProtocolCheck from "custom-protocol-check";
 
 function App() {
   function detectOperatingSystem() {
@@ -34,7 +35,7 @@ function App() {
 
     const storeUrl = {
       windows: "",
-      ios: "https://apps.apple.com/us/app/facebook/id284882215",
+      ios: "https://apps.apple.com/ph/app/gump-ai-limited/id6670382932",
       android: "https://play.google.com/store/apps/details?id=com.gump.android",
     };
     if (isSafari) {
@@ -57,6 +58,24 @@ function App() {
       }, 2000);
     }
   }
+
+  const openApp = (albumLink: string) => {
+    const appUrl = albumLink.replace(/^https?:\/\//, "gumpapp://");
+    const appStoreURL =
+      "https://apps.apple.com/ph/app/gump-ai-limited/id6670382932";
+
+    customProtocolCheck(
+      appUrl,
+      () => {
+        // App is installed, proceed with opening the app
+        window.location.href = appUrl;
+      },
+      () => {
+        // App is not installed, redirect to App Store
+        window.location.href = appStoreURL;
+      }
+    );
+  };
 
   // useEffect(() => {
   //   // Create a meta tag
@@ -126,8 +145,17 @@ function App() {
       >
         3 Orig Go to App With Staging Album
       </button>
+      <button
+        onClick={() =>
+          openApp(
+            "https://pia.gump-staging.net/album/shinjuku-gyoen/202403271000shinjuku-gyoen-1734305812118"
+          )
+        }
+      >
+        Test Btn
+      </button>
       <p>{navigator.userAgent}</p>
-      <p>V53</p>
+      <p>V54</p>
     </>
   );
 }
