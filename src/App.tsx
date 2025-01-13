@@ -60,13 +60,14 @@ function App() {
 
   useEffect(() => {
     // Create a meta tag
-    const albumLink =
-      "https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043";
+    // const albumLink =
+    //   "https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043";
     // const appUrl = albumLink.replace(/^https?:\/\//, "gumpapp://");
-    const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=${albumLink}`;
+    // const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=${albumLink}`;
     const metaTag = document.createElement("meta");
     metaTag.name = "apple-itunes-app";
-    metaTag.content = `app-id=6670382932, app-argument=${appUrl}`;
+    metaTag.content =
+      "app-id=6670382932, app-argument=https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043";
 
     document.head.appendChild(metaTag);
 
@@ -128,7 +129,7 @@ function App() {
         3 Orig Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V51</p>
+      <p>V52</p>
     </>
   );
 }
