@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import "./App.css";
 
 function App() {
@@ -58,23 +58,21 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    // Create a meta tag
-    // const albumLink =
-    //   "https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043";
-    // const appUrl = albumLink.replace(/^https?:\/\//, "gumpapp://");
-    // const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=${albumLink}`;
-    const metaTag = document.createElement("meta");
-    metaTag.name = "apple-itunes-app";
-    metaTag.content =
-      "app-id=6670382932, app-argument=https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043";
+  // useEffect(() => {
+  //   // Create a meta tag
+  //   const albumLink =
+  //     "https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043";
+  //   const appUrl = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?deep_link_value=albumLink&albumLink=${albumLink}`;
+  //   const metaTag = document.createElement("meta");
+  //   metaTag.name = "apple-itunes-app";
+  //   metaTag.content = `app-id=6670382932, app-argument=${appUrl}`;
 
-    document.head.appendChild(metaTag);
+  //   document.head.appendChild(metaTag);
 
-    return () => {
-      document.head.removeChild(metaTag);
-    };
-  }, []);
+  //   return () => {
+  //     document.head.removeChild(metaTag);
+  //   };
+  // }, []);
 
   return (
     <>
@@ -129,7 +127,7 @@ function App() {
         3 Orig Go to App With Staging Album
       </button>
       <p>{navigator.userAgent}</p>
-      <p>V52</p>
+      <p>V53</p>
     </>
   );
 }
