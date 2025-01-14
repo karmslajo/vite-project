@@ -5,31 +5,6 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
-    <script>
-      !(function (t, e, n, s, a, c, i, o, p) {
-        (t.AppsFlyerSdkObject = a),
-          (t.AF =
-            t.AF ||
-            function () {
-              (t.AF.q = t.AF.q || []).push(
-                [Date.now()].concat(Array.prototype.slice.call(arguments))
-              );
-            }),
-          (t.AF.id = t.AF.id || i),
-          (t.AF.plugins = {}),
-          (o = e.createElement(n)),
-          (p = e.getElementsByTagName(n)[0]),
-          (o.async = 1),
-          (o.src =
-            "https://websdk.appsflyer.com?" +
-            (c.length > 0 ? "st=" + c.split(",").sort().join(",") + "&" : "") +
-            (i.length > 0 ? "af_id=" + i : "")),
-          p.parentNode.insertBefore(o, p);
-      })(window, document, "script", 0, "AF", "banners", {
-        banners: { key: "c635ed13-62fe-40c9-8968-dd174f585a27" },
-      });
-      AF("banners", "showBanner");
-    </script>
   </head>
   <body>
     <div id="root"></div>
