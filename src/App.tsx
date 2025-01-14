@@ -39,12 +39,7 @@ function App() {
       android: "https://play.google.com/store/apps/details?id=com.gump.android",
     };
     if (isSafari) {
-      window.location.href = appUrl;
-      setTimeout(() => {
-        if (document.hasFocus() && device && storeUrl[device]) {
-          window.location.href = storeUrl[device];
-        }
-      }, 3000);
+      window.location.href = `https://gumpapp.onelink.me/0i5A/7m9jy7cr?af_force_deeplink=true&deep_link_value=albumLink&albumLink=${albumLink}`;
     } else {
       const iframe = document.createElement("iframe");
       iframe.style.display = "none";
@@ -55,7 +50,7 @@ function App() {
           window.location.href = storeUrl[device];
         }
         document.body.removeChild(iframe);
-      }, 2000);
+      }, 1500);
     }
   }
 
