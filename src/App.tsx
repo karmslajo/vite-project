@@ -201,7 +201,12 @@ function App() {
           <p>V56</p>
         </>
       )}
-      {display === "camera" && <video ref={videoRef} />}
+      {display === "camera" && (
+        <>
+          <video ref={videoRef} style={{ width: "100%" }} />
+          <p>V2</p>
+        </>
+      )}
     </>
   );
 }
