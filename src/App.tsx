@@ -1,8 +1,12 @@
 // import { useEffect } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import "./App.css";
 import customProtocolCheck from "custom-protocol-check";
 
 function App() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const cameraActive = useRef(false);
+
   function detectOperatingSystem() {
     const userAgent = navigator.userAgent;
 
@@ -72,6 +76,44 @@ function App() {
     );
   };
 
+  const startCamera = useCallback(async () => {
+    if (cameraActive.current) return;
+    cameraActive.current = true;
+
+    const constraints = {
+      video: {
+        audio: false,
+        facingMode: "",
+      },
+    };
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+    } catch (error) {
+      console.error("Error accessing the camera:", error);
+    } finally {
+      cameraActive.current = false;
+    }
+  }, []);
+
+  function stopCamera() {
+    const stream = videoRef.current?.srcObject as MediaStream | null;
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+  }
+
+  useEffect(() => {
+    startCamera();
+    return () => {
+      stopCamera();
+    };
+  }, [startCamera]);
+
   // useEffect(() => {
   //   // Create a meta tag
   //   const albumLink =
@@ -88,69 +130,78 @@ function App() {
   //   };
   // }, []);
 
+  const display: string = "camera";
+
   return (
     <>
-      <button
-        onClick={() =>
-          redirectToApp(
-            "https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043"
-          )
-        }
-      >
-        1 Go to App With Production Album
-      </button>
-      <button
-        onClick={() =>
-          redirectToApp("https://piaayopela.gump.gg/album/travel/travel")
-        }
-      >
-        2 Go to App With Production Album
-      </button>
-      <button
-        onClick={() =>
-          redirectToAppOrig("https://piaayopela.gump.gg/album/cats-and-dogs")
-        }
-      >
-        3 Orig Go to App With Production Album
-      </button>
-      <button
-        onClick={() =>
-          redirectToApp(
-            "https://pia.gump-staging.net/album/sun-life-fun-run/pok%C3%A9mon-run-hong-kong-2024"
-          )
-        }
-      >
-        1 Go to App With Staging Album
-      </button>
-      <button
-        onClick={() =>
-          redirectToApp(
-            "https://pia.gump-staging.net/album/alex/20241118kawagoe"
-          )
-        }
-      >
-        2 Go to App With Staging Album
-      </button>
-      <button
-        onClick={() =>
-          redirectToAppOrig(
-            "https://pia.gump-staging.net/album/shinjuku-gyoen/202403271000shinjuku-gyoen-1734305812118"
-          )
-        }
-      >
-        3 Orig Go to App With Staging Album
-      </button>
-      <button
-        onClick={() =>
-          openApp(
-            "https://pia.gump-staging.net/album/shinjuku-gyoen/202403271000shinjuku-gyoen-1734305812118"
-          )
-        }
-      >
-        Test Btn
-      </button>
-      <p>{navigator.userAgent}</p>
-      <p>V56</p>
+      {display === "webMobileFlow" && (
+        <>
+          <button
+            onClick={() =>
+              redirectToApp(
+                "https://piaayopela.gump.gg/album/jane-doe/iia-1734488550043"
+              )
+            }
+          >
+            1 Go to App With Production Album
+          </button>
+          <button
+            onClick={() =>
+              redirectToApp("https://piaayopela.gump.gg/album/travel/travel")
+            }
+          >
+            2 Go to App With Production Album
+          </button>
+          <button
+            onClick={() =>
+              redirectToAppOrig(
+                "https://piaayopela.gump.gg/album/cats-and-dogs"
+              )
+            }
+          >
+            3 Orig Go to App With Production Album
+          </button>
+          <button
+            onClick={() =>
+              redirectToApp(
+                "https://pia.gump-staging.net/album/sun-life-fun-run/pok%C3%A9mon-run-hong-kong-2024"
+              )
+            }
+          >
+            1 Go to App With Staging Album
+          </button>
+          <button
+            onClick={() =>
+              redirectToApp(
+                "https://pia.gump-staging.net/album/alex/20241118kawagoe"
+              )
+            }
+          >
+            2 Go to App With Staging Album
+          </button>
+          <button
+            onClick={() =>
+              redirectToAppOrig(
+                "https://pia.gump-staging.net/album/shinjuku-gyoen/202403271000shinjuku-gyoen-1734305812118"
+              )
+            }
+          >
+            3 Orig Go to App With Staging Album
+          </button>
+          <button
+            onClick={() =>
+              openApp(
+                "https://pia.gump-staging.net/album/shinjuku-gyoen/202403271000shinjuku-gyoen-1734305812118"
+              )
+            }
+          >
+            Test Btn
+          </button>
+          <p>{navigator.userAgent}</p>
+          <p>V56</p>
+        </>
+      )}
+      {display === "camera" && <video ref={videoRef} />}
     </>
   );
 }
