@@ -130,7 +130,7 @@ function App() {
   //   };
   // }, []);
 
-  const display: string = "camera";
+  const display: string = "webMobileFlow";
 
   return (
     <>
