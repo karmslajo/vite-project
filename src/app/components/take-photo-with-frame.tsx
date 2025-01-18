@@ -170,6 +170,9 @@ function Camera(props: CameraProps) {
     const constraints = {
       video: {
         audio: false,
+        aspectRatio: frameAspectRatio,
+        width: frameRect.width,
+        height: frameRect.height,
         facingMode: facingMode,
       },
     };
@@ -259,6 +262,7 @@ function Camera(props: CameraProps) {
           onClick={capturePhoto}
           className={`${styles.controlButton} ${styles.capture}`}
         />
+        <p>V1</p>
         <div
           onClick={switchCamera}
           className={`${styles.controlButton} ${styles.switch}`}
