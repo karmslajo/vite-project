@@ -188,7 +188,7 @@ function Camera(props: CameraProps) {
     } finally {
       cameraActive.current = false;
     }
-  }, [facingMode]);
+  }, [facingMode, isLandscape]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
