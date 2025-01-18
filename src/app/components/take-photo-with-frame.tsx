@@ -171,8 +171,6 @@ function Camera(props: CameraProps) {
       video: {
         audio: false,
         aspectRatio: frameAspectRatio,
-        width: frameRect.width,
-        height: frameRect.height,
         facingMode: facingMode,
       },
     };
@@ -188,7 +186,7 @@ function Camera(props: CameraProps) {
     } finally {
       cameraActive.current = false;
     }
-  }, [facingMode, isLandscape]);
+  }, [facingMode]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -262,7 +260,7 @@ function Camera(props: CameraProps) {
           onClick={capturePhoto}
           className={`${styles.controlButton} ${styles.capture}`}
         />
-        <p>V1</p>
+        <p>V2</p>
         <div
           onClick={switchCamera}
           className={`${styles.controlButton} ${styles.switch}`}
