@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
-import imgBottomCircles2 from "../../../public/bottom-circles-2.webp";
 import styles from "../styles/take-photo-with-frame.module.scss";
 
 type CameraProps = {
@@ -426,13 +425,7 @@ function ResultPhoto(props: ResultPhotoProps) {
           </div>
         </div>
       )}
-      <div className={styles.footer}>
-        <img
-          className={styles.bottomFigures}
-          src={imgBottomCircles2}
-          alt="bottomCircles2"
-        />
-      </div>
+      <div className={styles.footer}></div>
     </div>
   );
 }
