@@ -170,7 +170,6 @@ function Camera(props: CameraProps) {
     const constraints = {
       video: {
         audio: false,
-        aspectRatio: frameAspectRatio,
         facingMode: facingMode,
       },
     };
