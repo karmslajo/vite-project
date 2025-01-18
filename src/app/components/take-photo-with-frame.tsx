@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
@@ -170,7 +171,7 @@ function Camera(props: CameraProps) {
     const constraints = {
       video: {
         audio: false,
-        aspectRatio: frameAspectRatio,
+        aspectRatio: isLandscape ? 16 / 9 : 9 / 16,
         facingMode: facingMode,
       },
     };
