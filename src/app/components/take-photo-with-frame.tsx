@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
-import imgBottomCircles2 from "../../assets/bottom-circles-2.svg";
+import imgBottomCircles2 from "../../../public/bottom-circles-2.webp";
 import styles from "../styles/take-photo-with-frame.module.scss";
 
 type CameraProps = {

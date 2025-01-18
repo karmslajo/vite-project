@@ -1,7 +1,7 @@
 "use client";
 
 import { PropsWithChildren } from "react";
-import styles from "../styles/modal-overlay.module.css";
+import styles from "../styles/modal.module.scss";
 
 export type ModalProps = PropsWithChildren & {
   enableCloseOnOverlayClick?: boolean;
