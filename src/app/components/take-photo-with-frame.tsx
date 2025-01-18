@@ -165,13 +165,12 @@ function Camera(props: CameraProps) {
     if (!frameOverlay) return;
 
     const frameRect = frameOverlay.getBoundingClientRect();
-    // const frameAspectRatio = frameRect.width / frameRect.height;
+    const frameAspectRatio = frameRect.width / frameRect.height;
 
     const constraints = {
       video: {
         audio: false,
-        width: frameRect.width,
-        height: frameRect.height,
+        aspectRatio: frameAspectRatio,
         facingMode: facingMode,
       },
     };
@@ -223,7 +222,7 @@ function Camera(props: CameraProps) {
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
       <div className={styles.cameraWrapper}>
-        <video ref={videoRef} />
+        <video ref={videoRef} className={styles.cameraFeed} />
         <img
           ref={frameRef}
           src={
