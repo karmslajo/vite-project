@@ -1,0 +1,522 @@
+@use "./media" as media;
+@use "./common" as common;
+
+.takePhotoWithFrameBtn {
+  @include common.flex-layout(center, center, flex, row);
+  border-radius: 10px;
+  cursor: pointer;
+  pointer-events: all;
+  background-color: #00bfff;
+  background-image: url(/public/take-photo-with-frame-white.webp);
+  background-position: center;
+  background-repeat: no-repeat, no-repeat;
+  background-size: 40px 40px;
+  min-width: 60px;
+  min-height: 60px;
+}
+
+.takePhotoWithFramePopup {
+  @include common.flex-layout;
+  background-color: white;
+  margin-top: auto;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+
+  @media (prefers-color-scheme: light) {
+    background-color: black;
+  }
+
+  .header {
+    @include common.flex-layout(flex-end, center, flex, row);
+    width: 100%;
+    margin-bottom: auto;
+
+    .closeIcon {
+      width: 15px;
+      height: 15px;
+      margin-right: 25px;
+      margin-top: 25px;
+      background: center / contain no-repeat;
+      background-image: url(/public/close-icon-black.webp);
+      cursor: pointer;
+
+      @media (prefers-color-scheme: light) {
+        background-image: url(/public/close-icon-white.webp);
+      }
+    }
+  }
+
+  .content {
+    @include common.flex-layout;
+    color: white;
+    margin-top: 30px;
+    width: 100%;
+
+    @media (prefers-color-scheme: light) {
+      color: black;
+    }
+
+    .takePhotoWithFrameGraphic {
+      width: 330px;
+      height: 100px;
+      background: center / contain no-repeat;
+      background-image: url(/public/take-photo-with-frame-2.webp);
+
+      @media (prefers-color-scheme: light) {
+        background-image: url(/public/take-photo-with-frame-1.webp);
+      }
+    }
+
+    .label {
+      @include common.flex-layout(center, center, flex, row);
+      font-family: "DM Serif Display", serif;
+      text-align: left;
+      font-weight: 400;
+      font-size: 20px;
+      width: 100%;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      color: black;
+
+      @media (prefers-color-scheme: light) {
+        color: white;
+      }
+    }
+
+    .message {
+      @include common.flex-layout(center, center, flex, row);
+      text-align: center;
+      font-size: 12px;
+      width: 260px;
+      color: black;
+
+      @media (prefers-color-scheme: light) {
+        color: white;
+      }
+    }
+
+    .takeButton {
+      @include common.flex-layout(center, center, flex, row);
+      cursor: pointer;
+      background-color: #ff9632;
+      border-radius: 50px;
+      padding: 10px 30px;
+      font-weight: bold;
+      font-size: 14px;
+      color: white;
+      margin: 25px 0 40px 0;
+
+      @media (prefers-color-scheme: light) {
+        color: black;
+      }
+    }
+  }
+
+  .footer {
+    @include common.flex-layout(flex-end, center, flex, row);
+    width: 100%;
+    margin-top: auto;
+
+    .bottomFigures {
+      width: 330px;
+      height: 50px;
+      background: bottom / contain no-repeat;
+      background-image: url(/public/bottom-circles-1.webp);
+    }
+  }
+}
+
+.takePhotoWithFrameContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+
+  @media (orientation: landscape) {
+    flex-direction: row;
+  }
+
+  .cameraWrapper {
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+
+    .cameraFeed {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      // overflow-clip-margin: content-box;
+      // overflow: clip;
+      // transform: scaleX(-1); // Flip the video horizontally
+    }
+
+    .frameOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      object-fit: contain;
+      z-index: 2;
+    }
+
+    .overlayMask {
+      position: absolute;
+      background-color: black;
+      z-index: 1;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .overlayTop {
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .overlayBottom {
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .overlayLeft {
+      top: 0;
+      left: 0;
+      height: 100%;
+    }
+
+    .overlayRight {
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  }
+
+  .controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #111;
+    flex-shrink: 0;
+    height: 125px;
+    width: 100%;
+
+    @media (orientation: landscape) {
+      flex-direction: column-reverse;
+      height: 100%;
+      width: 125px;
+    }
+
+    .controlButton {
+      @include common.flex-layout(center, center, flex, row);
+      cursor: pointer;
+      pointer-events: all;
+      background-color: transparent;
+      background-position: center;
+      background-repeat: no-repeat, no-repeat;
+      background-size: contain;
+
+      &.close {
+        background-image: url(/public/close-icon-dark-background.webp);
+        width: 40px;
+        height: 40px;
+        transition: transform 0.1s ease;
+
+        &:hover {
+          transform: scale(0.9);
+        }
+      }
+
+      &.confirm {
+        background-image: url(/public/confirm-icon-dark-background.webp);
+        width: 40px;
+        height: 40px;
+        transition: transform 0.1s ease;
+
+        &:hover {
+          transform: scale(0.9);
+        }
+      }
+
+      &.switch {
+        background-image: url(/public/retry-icon-dark-background.webp);
+        width: 40px;
+        height: 40px;
+        transition: transform 0.1s ease;
+
+        &:hover {
+          transform: scale(0.9);
+        }
+      }
+
+      &.capture {
+        background-image: url(/public/concentric-circles-2-white.webp);
+        width: 80px;
+        height: 80px;
+        transition: transform 0.1s ease;
+
+        &:hover {
+          transform: scale(0.9);
+        }
+      }
+    }
+  }
+
+  .photoPreview {
+    position: relative;
+    @include common.flex-layout;
+    flex: 1;
+    background: black;
+
+    @media (orientation: landscape) {
+      @include common.flex-layout(center, center, flex, row);
+    }
+
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      object-fit: contain;
+    }
+  }
+}
+
+.resultPhotoContainer {
+  @include common.flex-layout(flex-start);
+  background-color: black;
+  gap: 3%;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  padding-top: 5%;
+
+  @media (prefers-color-scheme: light) {
+    background-color: white;
+  }
+
+  .header {
+    @include common.flex-layout(flex-start, center, flex, row);
+    width: 100%;
+    top: 0;
+    position: absolute;
+
+    .closeIcon {
+      width: 15px;
+      height: 15px;
+      background: center / contain no-repeat;
+      background-image: url(/public/close-icon-black.webp);
+      cursor: pointer;
+
+      @media (prefers-color-scheme: dark) {
+        background-image: url(/public/close-icon-white.webp);
+      }
+    }
+
+    .backIcon {
+      width: 20px;
+      height: 20px;
+      background: center / contain no-repeat;
+      background-image: url(/public/Chevron-Left-black-2.webp);
+      margin: 20px 20px;
+      cursor: pointer;
+
+      @media (prefers-color-scheme: dark) {
+        background-image: url(/public/Chevron-Left-white-2.svg);
+      }
+    }
+  }
+
+  .resultPhoto {
+    object-fit: contain;
+    margin-top: auto;
+
+    &.portraitInLandscapeView {
+      width: 30%;
+      height: auto;
+    }
+
+    &.lanscapeInPortraitView {
+      width: 80%;
+      height: auto;
+    }
+
+    &.lanscapeInLandscapeView {
+      width: 50%;
+      height: auto;
+    }
+
+    &.portraitInPortraitView {
+      width: 55%;
+      height: auto;
+    }
+  }
+
+  .shareOptions {
+    @include common.flex-layout(center, center, flex, row);
+    border-radius: 50px;
+    gap: 15px;
+    width: 70%;
+    max-width: 325px;
+    background-color: #1a1a1a;
+
+    @include media.mobile {
+      padding: 10px 0;
+    }
+
+    @include media.desktop-or-tablet {
+      padding: 15px 0;
+    }
+
+    @media (prefers-color-scheme: light) {
+      background-color: #fafafa;
+    }
+
+    .shareIcon {
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 7vw;
+      height: 7vw;
+      max-width: 40px;
+      max-height: 40px;
+    }
+
+    .shareInstagram {
+      @extend .shareIcon;
+      background-image: url(/public/instagram-icon-colored.webp);
+    }
+
+    .shareFacebook {
+      @extend .shareIcon;
+      background-image: url(/public/facebook-icon-blue.webp);
+    }
+
+    .shareLinkedin {
+      @extend .shareIcon;
+      background-image: url(/public/linkedin-icon-blue.webp);
+    }
+
+    .shareIconWhite {
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 5vw;
+      height: 5vw;
+      max-width: 30px;
+      max-height: 30px;
+      background-image: url(/public/share-white-2.svg);
+    }
+
+    .shareButton {
+      @include common.flex-layout(center, center, flex, row);
+      cursor: pointer;
+      gap: 5px;
+      pointer-events: all;
+      background-color: #ff9632;
+      border-radius: 50px;
+      width: 25vw;
+      height: 10vw;
+      max-width: 110px;
+      max-height: 50px;
+      padding-right: 5px;
+      transition: transform 0.3s ease;
+      color: white;
+
+      .text {
+        font-weight: bold;
+
+        &::first-letter {
+          text-transform: uppercase;
+        }
+      }
+      &:hover {
+        transform: scale(0.9);
+      }
+    }
+  }
+
+  .hashtagContainer {
+    @include common.flex-layout(flex-start);
+    width: 75%;
+    gap: 7px;
+
+    .hashtagLabel {
+      color: white;
+      font-size: 16px;
+      width: 100%;
+      margin-left: -30px;
+      font-weight: bold;
+
+      @media (prefers-color-scheme: light) {
+        color: black;
+      }
+    }
+
+    .hashtagsInner {
+      @include common.flex-layout(space-between, center, flex, row);
+      border: 2px solid #b7b7b7;
+      border-radius: 50px;
+      gap: 7px;
+      padding: 4px 8px 4px 16px;
+      width: 100%;
+
+      .hashtags {
+        color: white;
+        cursor: pointer;
+        width: 90%;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-size: 16px;
+
+        @media (prefers-color-scheme: light) {
+          color: black;
+        }
+      }
+
+      .copyIcon {
+        width: 6vw;
+        height: 6vw;
+        max-width: 40px;
+        max-height: 40px;
+        background: center / contain no-repeat;
+        background-image: url(/public/copy-icon-orange.webp);
+        cursor: pointer;
+
+        &:hover {
+          transform: scale(0.9);
+        }
+      }
+    }
+  }
+
+  .footer {
+    @include common.flex-layout(flex-end, center, flex, row);
+    width: 100%;
+    margin-top: auto;
+
+    .bottomFigures {
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+
+      @media (orientation: landscape) {
+        width: 0;
+        height: 0;
+      }
+
+      @include media.desktop-or-tablet {
+        width: 0;
+        height: 0;
+      }
+    }
+  }
+}
