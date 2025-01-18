@@ -260,7 +260,6 @@ function Camera(props: CameraProps) {
           onClick={capturePhoto}
           className={`${styles.controlButton} ${styles.capture}`}
         />
-        <p>V2</p>
         <div
           onClick={switchCamera}
           className={`${styles.controlButton} ${styles.switch}`}
