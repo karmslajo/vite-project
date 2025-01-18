@@ -170,8 +170,6 @@ function Camera(props: CameraProps) {
     const constraints = {
       video: {
         audio: false,
-        width: isLandscape ? frameRect.width : frameRect.height,
-        height: isLandscape ? frameRect.height : frameRect.width,
         facingMode: facingMode,
       },
     };
