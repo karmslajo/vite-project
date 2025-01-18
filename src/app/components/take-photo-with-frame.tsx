@@ -223,7 +223,7 @@ function Camera(props: CameraProps) {
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
       <div className={styles.cameraWrapper}>
-        <video ref={videoRef} className={styles.cameraFeed} />
+        <video ref={videoRef} />
         <img
           ref={frameRef}
           src={
