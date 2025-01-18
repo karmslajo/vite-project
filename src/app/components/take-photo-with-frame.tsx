@@ -170,8 +170,8 @@ function Camera(props: CameraProps) {
     const constraints = {
       video: {
         audio: false,
-        height: { ideal: 1080, max: 2160, min: 720 },
-        width: { ideal: 1920, max: 3840, min: 1280 },
+        height: frameRect.height,
+        width: frameRect.width,
         facingMode: facingMode,
       },
     };
@@ -223,7 +223,7 @@ function Camera(props: CameraProps) {
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
       <div className={styles.cameraWrapper}>
-        <video ref={videoRef} />
+        <video ref={videoRef} className={styles.cameraFeed} />
         <img
           ref={frameRef}
           src={
