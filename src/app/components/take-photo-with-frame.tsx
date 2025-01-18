@@ -165,12 +165,13 @@ function Camera(props: CameraProps) {
     if (!frameOverlay) return;
 
     const frameRect = frameOverlay.getBoundingClientRect();
-    const frameAspectRatio = frameRect.width / frameRect.height;
+    // const frameAspectRatio = frameRect.width / frameRect.height;
 
     const constraints = {
       video: {
         audio: false,
-        aspectRatio: frameAspectRatio,
+        width: frameRect.width,
+        height: frameRect.height,
         facingMode: facingMode,
       },
     };
