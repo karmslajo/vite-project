@@ -3,7 +3,7 @@ import { FrameCamera } from "./app/components/take-photo-with-frame";
 import { WebToMobile } from "./app/components/web-to-mobile";
 
 function App() {
-  const display: string = "camera";
+  const display: string = "webMobileFlow";
 
   return (
     <>
