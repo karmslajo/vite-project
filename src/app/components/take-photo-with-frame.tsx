@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
@@ -165,7 +164,7 @@ function Camera(props: CameraProps) {
     if (!frameOverlay) return;
 
     const frameRect = frameOverlay.getBoundingClientRect();
-    const frameAspectRatio = frameRect.width / frameRect.height;
+    // const frameAspectRatio = frameRect.width / frameRect.height;
 
     const constraints = {
       video: {
@@ -261,7 +260,6 @@ function Camera(props: CameraProps) {
           onClick={capturePhoto}
           className={`${styles.controlButton} ${styles.capture}`}
         />
-        <p>V1</p>
         <div
           onClick={switchCamera}
           className={`${styles.controlButton} ${styles.switch}`}

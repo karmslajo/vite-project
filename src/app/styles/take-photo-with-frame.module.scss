@@ -7,7 +7,7 @@
   cursor: pointer;
   pointer-events: all;
   background-color: #00bfff;
-  background-image: url(/public/take-photo-with-frame-white.webp);
+  background-image: url(take-photo-with-frame-white.webp);
   background-position: center;
   background-repeat: no-repeat, no-repeat;
   background-size: 40px 40px;
@@ -37,11 +37,11 @@
       margin-right: 25px;
       margin-top: 25px;
       background: center / contain no-repeat;
-      background-image: url(/public/close-icon-black.webp);
+      background-image: url(close-icon-black.webp);
       cursor: pointer;
 
       @media (prefers-color-scheme: light) {
-        background-image: url(/public/close-icon-white.webp);
+        background-image: url(close-icon-white.webp);
       }
     }
   }
@@ -60,10 +60,10 @@
       width: 330px;
       height: 100px;
       background: center / contain no-repeat;
-      background-image: url(/public/take-photo-with-frame-2.webp);
+      background-image: url(take-photo-with-frame-2.webp);
 
       @media (prefers-color-scheme: light) {
-        background-image: url(/public/take-photo-with-frame-1.webp);
+        background-image: url(take-photo-with-frame-1.webp);
       }
     }
 
@@ -121,7 +121,7 @@
       width: 330px;
       height: 50px;
       background: bottom / contain no-repeat;
-      background-image: url(/public/bottom-circles-1.webp);
+      background-image: url(bottom-circles-1.webp);
     }
   }
 }
@@ -221,7 +221,7 @@
       background-size: contain;
 
       &.close {
-        background-image: url(/public/close-icon-dark-background.webp);
+        background-image: url(close-icon-dark-background.webp);
         width: 40px;
         height: 40px;
         transition: transform 0.1s ease;
@@ -232,7 +232,7 @@
       }
 
       &.confirm {
-        background-image: url(/public/confirm-icon-dark-background.webp);
+        background-image: url(confirm-icon-dark-background.webp);
         width: 40px;
         height: 40px;
         transition: transform 0.1s ease;
@@ -243,7 +243,7 @@
       }
 
       &.switch {
-        background-image: url(/public/retry-icon-dark-background.webp);
+        background-image: url(retry-icon-dark-background.webp);
         width: 40px;
         height: 40px;
         transition: transform 0.1s ease;
@@ -254,7 +254,7 @@
       }
 
       &.capture {
-        background-image: url(/public/concentric-circles-2-white.webp);
+        background-image: url(concentric-circles-2-white.webp);
         width: 80px;
         height: 80px;
         transition: transform 0.1s ease;
@@ -311,11 +311,11 @@
       width: 15px;
       height: 15px;
       background: center / contain no-repeat;
-      background-image: url(/public/close-icon-black.webp);
+      background-image: url(close-icon-black.webp);
       cursor: pointer;
 
       @media (prefers-color-scheme: dark) {
-        background-image: url(/public/close-icon-white.webp);
+        background-image: url(close-icon-white.webp);
       }
     }
 
@@ -323,12 +323,12 @@
       width: 20px;
       height: 20px;
       background: center / contain no-repeat;
-      background-image: url(/public/Chevron-Left-black-2.webp);
+      background-image: url(Chevron-Left-black-2.webp);
       margin: 20px 20px;
       cursor: pointer;
 
       @media (prefers-color-scheme: dark) {
-        background-image: url(/public/Chevron-Left-white-2.svg);
+        background-image: url(Chevron-Left-white-2.svg);
       }
     }
   }
@@ -390,17 +390,17 @@
 
     .shareInstagram {
       @extend .shareIcon;
-      background-image: url(/public/instagram-icon-colored.webp);
+      background-image: url(instagram-icon-colored.webp);
     }
 
     .shareFacebook {
       @extend .shareIcon;
-      background-image: url(/public/facebook-icon-blue.webp);
+      background-image: url(facebook-icon-blue.webp);
     }
 
     .shareLinkedin {
       @extend .shareIcon;
-      background-image: url(/public/linkedin-icon-blue.webp);
+      background-image: url(linkedin-icon-blue.webp);
     }
 
     .shareIconWhite {
@@ -411,7 +411,7 @@
       height: 5vw;
       max-width: 30px;
       max-height: 30px;
-      background-image: url(/public/share-white-2.svg);
+      background-image: url(share-white-2.svg);
     }
 
     .shareButton {
@@ -486,7 +486,7 @@
         max-width: 40px;
         max-height: 40px;
         background: center / contain no-repeat;
-        background-image: url(/public/copy-icon-orange.webp);
+        background-image: url(copy-icon-orange.webp);
         cursor: pointer;
 
         &:hover {
