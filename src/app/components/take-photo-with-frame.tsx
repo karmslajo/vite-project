@@ -169,6 +169,8 @@ function Camera(props: CameraProps) {
     const constraints = {
       video: {
         audio: false,
+        width: { ideal: 320 },
+        height: { ideal: 250 },
         facingMode: facingMode,
       },
     };
