@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
@@ -221,7 +220,48 @@ function Camera(props: CameraProps) {
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
       <div className={styles.cameraWrapper}>
-        <video ref={videoRef} />
+        <video ref={videoRef} className={styles.cameraFeed} />
+        <img
+          ref={frameRef}
+          src={
+            isLandscape
+              ? props.frame!.landscape!.url
+              : props.frame!.portrait!.url
+          }
+          alt="Frame overlay"
+          className={styles.frameOverlay}
+          onLoad={handleFrameLoad}
+        />
+        <div
+          className={`${styles.overlayMask} ${styles.overlayTop}`}
+          style={{ height: `${frameDimensions.top}%` }}
+        />
+        <div
+          className={`${styles.overlayMask} ${styles.overlayBottom}`}
+          style={{ height: `${frameDimensions.bottom}%` }}
+        />
+        <div
+          className={`${styles.overlayMask} ${styles.overlayLeft}`}
+          style={{ width: `${frameDimensions.left}%` }}
+        />
+        <div
+          className={`${styles.overlayMask} ${styles.overlayRight}`}
+          style={{ width: `${frameDimensions.right}%` }}
+        />
+      </div>
+      <div className={styles.controls}>
+        <div
+          onClick={closeTakePhotoWithFrame}
+          className={`${styles.controlButton} ${styles.close}`}
+        />
+        <div
+          onClick={capturePhoto}
+          className={`${styles.controlButton} ${styles.capture}`}
+        />
+        <div
+          onClick={switchCamera}
+          className={`${styles.controlButton} ${styles.switch}`}
+        />
       </div>
       <canvas ref={canvasRef} style={{ display: "none" }} />
     </div>
