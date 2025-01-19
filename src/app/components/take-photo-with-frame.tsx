@@ -160,17 +160,15 @@ function Camera(props: CameraProps) {
     if (cameraActive.current) return;
     cameraActive.current = true;
 
-    const frameOverlay = frameRef.current;
-    if (!frameOverlay) return;
+    // const frameOverlay = frameRef.current;
+    // if (!frameOverlay) return;
 
-    const frameRect = frameOverlay.getBoundingClientRect();
+    // const frameRect = frameOverlay.getBoundingClientRect();
     // const frameAspectRatio = frameRect.width / frameRect.height;
 
     const constraints = {
       video: {
         audio: false,
-        height: frameRect.height,
-        width: frameRect.width,
         facingMode: facingMode,
       },
     };
