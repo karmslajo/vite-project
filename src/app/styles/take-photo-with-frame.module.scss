@@ -7,7 +7,7 @@
   cursor: pointer;
   pointer-events: all;
   background-color: #00bfff;
-  background-image: url(take-photo-with-frame-white.webp);
+  background-image: url(take-photo-with-frame-white.svg);
   background-position: center;
   background-repeat: no-repeat, no-repeat;
   background-size: 40px 40px;
@@ -37,11 +37,11 @@
       margin-right: 25px;
       margin-top: 25px;
       background: center / contain no-repeat;
-      background-image: url(close-icon-black.webp);
+      background-image: url(close-icon-black.svg);
       cursor: pointer;
 
       @media (prefers-color-scheme: light) {
-        background-image: url(close-icon-white.webp);
+        background-image: url(close-icon-white.svg);
       }
     }
   }
@@ -60,10 +60,10 @@
       width: 330px;
       height: 100px;
       background: center / contain no-repeat;
-      background-image: url(take-photo-with-frame-2.webp);
+      background-image: url(take-photo-with-frame-2.svg);
 
       @media (prefers-color-scheme: light) {
-        background-image: url(take-photo-with-frame-1.webp);
+        background-image: url(take-photo-with-frame-1.svg);
       }
     }
 
@@ -121,7 +121,7 @@
       width: 330px;
       height: 50px;
       background: bottom / contain no-repeat;
-      background-image: url(bottom-circles-1.webp);
+      background-image: url(bottom-circles-1.svg);
     }
   }
 }
@@ -221,7 +221,7 @@
       background-size: contain;
 
       &.close {
-        background-image: url(close-icon-dark-background.webp);
+        background-image: url(close-icon-dark-background.svg);
         width: 40px;
         height: 40px;
         transition: transform 0.1s ease;
@@ -232,7 +232,7 @@
       }
 
       &.confirm {
-        background-image: url(confirm-icon-dark-background.webp);
+        background-image: url(confirm-icon-dark-background.svg);
         width: 40px;
         height: 40px;
         transition: transform 0.1s ease;
@@ -243,7 +243,7 @@
       }
 
       &.switch {
-        background-image: url(retry-icon-dark-background.webp);
+        background-image: url(retry-icon-dark-background.svg);
         width: 40px;
         height: 40px;
         transition: transform 0.1s ease;
@@ -254,7 +254,7 @@
       }
 
       &.capture {
-        background-image: url(concentric-circles-2-white.webp);
+        background-image: url(concentric-circles-2-white.svg);
         width: 80px;
         height: 80px;
         transition: transform 0.1s ease;
@@ -311,11 +311,11 @@
       width: 15px;
       height: 15px;
       background: center / contain no-repeat;
-      background-image: url(close-icon-black.webp);
+      background-image: url(close-icon-black.svg);
       cursor: pointer;
 
       @media (prefers-color-scheme: dark) {
-        background-image: url(close-icon-white.webp);
+        background-image: url(close-icon-white.svg);
       }
     }
 
@@ -323,7 +323,7 @@
       width: 20px;
       height: 20px;
       background: center / contain no-repeat;
-      background-image: url(Chevron-Left-black-2.webp);
+      background-image: url(Chevron-Left-black-2.svg);
       margin: 20px 20px;
       cursor: pointer;
 
@@ -390,17 +390,17 @@
 
     .shareInstagram {
       @extend .shareIcon;
-      background-image: url(instagram-icon-colored.webp);
+      background-image: url(instagram-icon-colored.svg);
     }
 
     .shareFacebook {
       @extend .shareIcon;
-      background-image: url(facebook-icon-blue.webp);
+      background-image: url(facebook-icon-blue.svg);
     }
 
     .shareLinkedin {
       @extend .shareIcon;
-      background-image: url(linkedin-icon-blue.webp);
+      background-image: url(linkedin-icon-blue.svg);
     }
 
     .shareIconWhite {
@@ -486,7 +486,7 @@
         max-width: 40px;
         max-height: 40px;
         background: center / contain no-repeat;
-        background-image: url(copy-icon-orange.webp);
+        background-image: url(copy-icon-orange.svg);
         cursor: pointer;
 
         &:hover {
