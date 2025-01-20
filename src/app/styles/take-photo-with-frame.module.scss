@@ -147,7 +147,10 @@
 
     .cameraFeed {
       object-fit: cover;
-      // transform: scaleX(-1); // Flip the video horizontally
+    }
+
+    .reverse {
+      transform: scaleX(-1); // Flip the video horizontally
     }
 
     .frameOverlay {

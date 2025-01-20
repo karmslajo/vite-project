@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
@@ -81,9 +80,11 @@ function Camera(props: CameraProps) {
     canvas.height = frameOverlay.naturalHeight;
 
     // Flip the context horizontally for the video only
-    // ctx.save() // Save the current context state
-    // ctx.translate(canvas.width, 0)
-    // ctx.scale(-1, 1)
+    if (facingMode === "user") {
+      ctx.save(); // Save the current context state
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
 
     // Scale video to fit frame's resolution
     const videoAspectRatio = video.videoWidth / video.videoHeight;
@@ -121,7 +122,9 @@ function Camera(props: CameraProps) {
     );
 
     // Restore the original context to stop flipping for the frame
-    // ctx.restore()
+    if (facingMode === "user") {
+      ctx.restore();
+    }
 
     const frame = new Image();
     frame.crossOrigin = "anonymous";
@@ -221,8 +224,13 @@ function Camera(props: CameraProps) {
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
       <div className={styles.cameraWrapper}>
-        <video ref={videoRef} />
-        {/* <img
+        <video
+          ref={videoRef}
+          className={`${styles.cameraFeed} ${
+            facingMode === "user" ? styles.reverse : ""
+          }`}
+        />
+        <img
           ref={frameRef}
           src={
             isLandscape
@@ -248,7 +256,7 @@ function Camera(props: CameraProps) {
         <div
           className={`${styles.overlayMask} ${styles.overlayRight}`}
           style={{ width: `${frameDimensions.right}%` }}
-        /> */}
+        />
       </div>
       <div className={styles.controls}>
         <div
