@@ -188,7 +188,9 @@ function Camera(props: CameraProps) {
     } finally {
       cameraActive.current = false;
     }
-  }, [facingMode]);
+
+    calculateFrameDimensions();
+  }, [calculateFrameDimensions, facingMode]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -206,11 +208,9 @@ function Camera(props: CameraProps) {
 
   useEffect(() => {
     updateOrientation();
-    calculateFrameDimensions();
 
     function handleResize() {
       updateOrientation();
-      calculateFrameDimensions();
       // Handles resizing the video feed to fit the frame depending on orientation
       startCamera();
     }
@@ -219,7 +219,7 @@ function Camera(props: CameraProps) {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [updateOrientation, calculateFrameDimensions, startCamera]);
+  }, [updateOrientation, startCamera]);
 
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
@@ -319,11 +319,8 @@ function ResultPhoto(props: ResultPhotoProps) {
         return;
       }
 
-      const blob = new Blob([props.capturedPhoto.split(",")[1]], {
-        type: "image/png",
-      });
       const file = new File(
-        [blob],
+        [props.capturedPhoto],
         `gump_${props.frame?.name}_frame_photo_${Date.now()}.png`,
         { type: "image/png" }
       );

@@ -146,7 +146,8 @@
     background: black;
 
     .cameraFeed {
-      object-fit: cover;
+      object-fit: contain;
+      z-index: 1;
     }
 
     .reverse {
@@ -161,13 +162,13 @@
       height: 100%;
       pointer-events: none;
       object-fit: contain;
-      z-index: 2;
+      z-index: 3;
     }
 
     .overlayMask {
       position: absolute;
       background-color: black;
-      z-index: 1;
+      z-index: 2;
       pointer-events: none;
       transition: all 0.3s ease;
     }
