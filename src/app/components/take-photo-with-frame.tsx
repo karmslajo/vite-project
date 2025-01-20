@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
@@ -169,8 +170,6 @@ function Camera(props: CameraProps) {
     const constraints = {
       video: {
         audio: false,
-        width: { ideal: 375 },
-        height: { ideal: 265 },
         facingMode: facingMode,
       },
     };
@@ -222,8 +221,8 @@ function Camera(props: CameraProps) {
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
       <div className={styles.cameraWrapper}>
-        <video ref={videoRef} className={styles.cameraFeed} />
-        <img
+        <video ref={videoRef} />
+        {/* <img
           ref={frameRef}
           src={
             isLandscape
@@ -249,7 +248,7 @@ function Camera(props: CameraProps) {
         <div
           className={`${styles.overlayMask} ${styles.overlayRight}`}
           style={{ width: `${frameDimensions.right}%` }}
-        />
+        /> */}
       </div>
       <div className={styles.controls}>
         <div

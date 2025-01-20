@@ -139,16 +139,14 @@
 
   .cameraWrapper {
     position: relative;
-    flex: 1;
     display: flex;
+    flex: 1;
     justify-content: center;
     align-items: center;
     background: black;
 
     .cameraFeed {
       object-fit: cover;
-      // overflow-clip-margin: content-box;
-      // overflow: clip;
       // transform: scaleX(-1); // Flip the video horizontally
     }
 
