@@ -126,11 +126,19 @@ function Camera(props: CameraProps) {
     stopCamera();
   }
 
+  const updateOrientation = useCallback(() => {
+    setIsLandscape(window.innerWidth > window.innerHeight);
+  }, []);
+
   function closeTakePhotoWithFrame() {
     props.setCapturedPhoto(null);
     stopCamera();
     props.onClose();
     close();
+  }
+
+  function switchCamera() {
+    setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
   }
 
   const startCamera = useCallback(async () => {
@@ -175,18 +183,6 @@ function Camera(props: CameraProps) {
     }
   }
 
-  const updateOrientation = useCallback(() => {
-    setIsLandscape(window.innerWidth > window.innerHeight);
-    stopCamera();
-    startCamera();
-  }, [startCamera]);
-
-  function switchCamera() {
-    setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
-    stopCamera();
-    startCamera();
-  }
-
   useEffect(() => {
     startCamera();
     return () => {
@@ -195,11 +191,19 @@ function Camera(props: CameraProps) {
   }, [startCamera]);
 
   useEffect(() => {
-    window.addEventListener("resize", updateOrientation);
+    updateOrientation();
+
+    function handleResize() {
+      updateOrientation();
+      // Handles resizing the video feed to fit the frame depending on orientation
+      startCamera();
+    }
+
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener("resize", updateOrientation);
+      window.removeEventListener("resize", handleResize);
     };
-  }, [updateOrientation]);
+  }, [updateOrientation, startCamera]);
 
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
