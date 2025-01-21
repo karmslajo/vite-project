@@ -15,7 +15,7 @@ function Camera(props: CameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLImageElement>(null);
-  const [facingMode, setFacingMode] = useState("user");
+  const [facingMode, setFacingMode] = useState("environment");
   const [isLandscape, setIsLandscape] = useState(false);
   const [frameDimensions, setFrameDimensions] = useState({
     top: 0,
@@ -87,39 +87,20 @@ function Camera(props: CameraProps) {
     }
 
     // Scale video to fit frame's resolution
-    const videoAspectRatio = video.videoWidth / video.videoHeight;
-    const frameAspectRatio = canvas.width / canvas.height;
+    // const videoAspectRatio = video.videoWidth / video.videoHeight;
+    // const frameAspectRatio = canvas.width / canvas.height;
 
-    let sx = 0,
-      sy = 0,
-      sWidth = video.videoWidth,
-      sHeight = video.videoHeight;
-
-    if (videoAspectRatio > frameAspectRatio) {
-      // Video is wider than frame, crop horizontally
-      const cropWidth = video.videoWidth - video.videoHeight * frameAspectRatio;
-      sx = cropWidth / 2;
-      sWidth = video.videoWidth - cropWidth;
-    } else if (videoAspectRatio < frameAspectRatio) {
-      // Video is taller than frame, crop vertically
-      const cropHeight =
-        video.videoHeight - video.videoWidth / frameAspectRatio;
-      sy = cropHeight / 2;
-      sHeight = video.videoHeight - cropHeight;
-    }
+    const scale = Math.max(
+      canvas.width / video.videoWidth,
+      canvas.height / video.videoHeight
+    );
+    const sw = canvas.width / scale;
+    const sh = canvas.height / scale;
+    const sx = (video.videoWidth - sw) / 2;
+    const sy = (video.videoHeight - sh) / 2;
 
     // Draw the cropped video centered on the canvas
-    ctx.drawImage(
-      video,
-      sx,
-      sy,
-      sWidth,
-      sHeight,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
     // Restore the original context to stop flipping for the frame
     if (facingMode === "user") {
@@ -173,6 +154,9 @@ function Camera(props: CameraProps) {
     const constraints = {
       video: {
         audio: false,
+        // height: {
+        //   ideal: isLandscape ? frameRect.height : frameRect.width,
+        // },
         facingMode: facingMode,
       },
     };
