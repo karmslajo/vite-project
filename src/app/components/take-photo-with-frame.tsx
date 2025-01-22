@@ -1,11 +1,34 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
 import styles from "../styles/take-photo-with-frame.module.scss";
 import Webcam from "react-webcam";
 
+type Frame = {
+  id: string;
+  name: string;
+  landscape: {
+    url: string;
+    frameWidth: number;
+    frameHeight: number;
+    outlineWidth: number;
+    outlineHeight: number;
+    outlineLeft: number;
+    outlineTop: number;
+  };
+  portrait: {
+    url: string;
+    frameWidth: number;
+    frameHeight: number;
+    outlineWidth: number;
+    outlineHeight: number;
+    outlineLeft: number;
+    outlineTop: number;
+  };
+  hashtags: Key[] | null | undefined;
+};
+
 type CameraProps = {
-  frame: any;
+  frame: Frame;
   onClose: () => void;
   setCapturedPhoto: React.Dispatch<React.SetStateAction<string | null>>;
 };
@@ -26,6 +49,8 @@ function Camera(props: CameraProps) {
 
   const videoConstraints = {
     facingMode: facingMode,
+    width: { ideal: 4096 }, // Attempt to use the maximum width supported
+    height: { ideal: 2160 }, // Attempt to use the maximum height supported
     audio: false,
   };
 
@@ -87,7 +112,7 @@ function Camera(props: CameraProps) {
     if (!imageSrc) return;
 
     // For testing camera quality only
-    props.setCapturedPhoto(imageSrc);
+    // props.setCapturedPhoto(imageSrc);
 
     const img = new Image();
     img.src = imageSrc;
@@ -104,8 +129,8 @@ function Camera(props: CameraProps) {
 
       frame.onload = () => {
         ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-        // const imageData = canvas.toDataURL("image/jpeg");
-        // props.setCapturedPhoto(imageData);
+        const imageData = canvas.toDataURL("image/jpeg");
+        props.setCapturedPhoto(imageData);
       };
 
       frame.onerror = (err) => {
@@ -141,6 +166,15 @@ function Camera(props: CameraProps) {
     };
   }, [updateOrientation]);
 
+  const cameraWidthLanscape = `${
+    (props.frame.landscape.outlineWidth / props.frame.landscape.frameWidth) *
+    100
+  }%`;
+
+  const cameraWidthPortrait = `${
+    (props.frame.portrait.outlineWidth / props.frame.portrait.frameWidth) * 100
+  }%`;
+
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
       <div className={styles.cameraWrapper}>
@@ -150,7 +184,10 @@ function Camera(props: CameraProps) {
           className={`${styles.cameraFeed} ${
             facingMode === "user" ? styles.reverse : ""
           }`}
+          width={isLandscape ? cameraWidthLanscape : cameraWidthPortrait}
           screenshotFormat="image/jpeg"
+          mirrored={facingMode === "user"}
+          imageSmoothing
           forceScreenshotSourceSize
           screenshotQuality={1}
         />
@@ -202,7 +239,7 @@ function Camera(props: CameraProps) {
 }
 
 type ResultPhotoProps = {
-  frame: any;
+  frame: Frame;
   capturedPhoto: string;
   setCapturedPhoto: React.Dispatch<React.SetStateAction<string | null>>;
 };
@@ -211,7 +248,7 @@ function ResultPhoto(props: ResultPhotoProps) {
   const [showLongPressComponents, setShowLongPressComponents] = useState(false);
   const [photoOrientation, setPhotoOrientation] = useState<string | null>(null);
   const [isLandscape, setIsLandscape] = useState(false);
-  const longPressTimerRef = useRef<any>(null);
+  const longPressTimerRef = useRef<number | null>(null);
   const hashtagsRef = useRef<HTMLDivElement | null>(null);
 
   function handleTouchStart() {
@@ -360,7 +397,7 @@ function ResultPhoto(props: ResultPhotoProps) {
 }
 
 export type FrameCameraProps = {
-  frame: any;
+  frame: Frame;
   onClose: () => void;
 };
 
