@@ -2,6 +2,7 @@
 import { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
 import styles from "../styles/take-photo-with-frame.module.scss";
+import Webcam from "react-webcam";
 
 type CameraProps = {
   frame: any;
@@ -10,9 +11,8 @@ type CameraProps = {
 };
 
 function Camera(props: CameraProps) {
-  const cameraActive = useRef(false);
+  const webcamRef = useRef<Webcam>(null);
   const elNodeRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLImageElement>(null);
   const [facingMode, setFacingMode] = useState("environment");
@@ -23,6 +23,11 @@ function Camera(props: CameraProps) {
     left: 0,
     right: 0,
   });
+
+  const videoConstraints = {
+    facingMode: facingMode,
+    audio: false,
+  };
 
   const calculateFrameDimensions = useCallback(() => {
     const frame = frameRef.current;
@@ -63,151 +68,54 @@ function Camera(props: CameraProps) {
     calculateFrameDimensions();
   }, [calculateFrameDimensions]);
 
-  function capturePhoto() {
-    const video = videoRef.current;
+  const capturePhoto = useCallback(() => {
     const canvas = canvasRef.current;
     const frameOverlay = frameRef.current;
+    const webcam = webcamRef.current;
 
-    if (!canvas || !video || !frameOverlay) return;
+    if (!canvas || !webcam || !frameOverlay) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    // Set canvas to frame's original resolution
     canvas.width = frameOverlay.naturalWidth;
     canvas.height = frameOverlay.naturalHeight;
 
-    // Flip the context horizontally for the video only
-    if (facingMode === "user") {
-      ctx.save(); // Save the current context state
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-    }
+    const imageSrc = webcamRef.current.getScreenshot();
+    if (!imageSrc) return;
 
-    // Scale video to fit frame's resolution
+    // For testing camera quality only
+    props.setCapturedPhoto(imageSrc);
 
-    // =================================================================================================
-    // const frameRect = frameOverlay.getBoundingClientRect();
-    // const videoRatio = video.videoWidth / video.videoHeight;
-    // const frameRatio = frameRect.width / frameRect.height; // Frame overlay's aspect ratio
-    // let sw, sh, sx, sy;
-    // if (videoRatio > frameRatio) {
-    //   // Video is wider than the frame -> Crop width (Sides already correct)
-    //   sh = video.videoHeight;
-    //   sw = sh * frameRatio;
-    //   sx = (video.videoWidth - sw) / 2;
-    //   sy = 0;
-    // } else {
-    //   // Video is taller than the frame -> Crop height (Fix for top/bottom issue)
-    //   sw = video.videoWidth;
-    //   sh = sw / frameRatio;
+    const img = new Image();
+    img.src = imageSrc;
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-    //   // Make sure we're not seeing extra scene at top/bottom
-    //   if (sh > video.videoHeight) {
-    //     sh = video.videoHeight;
-    //   }
+      const frame = new Image();
+      frame.crossOrigin = "anonymous";
 
-    //   sx = 0;
-    //   sy = (video.videoHeight - sh) / 2;
-    // }
+      // For dev only, do not use in production
+      frame.src = isLandscape
+        ? `https://api.allorigins.win/raw?url=${props.frame!.landscape!.url}`
+        : `https://api.allorigins.win/raw?url=${props.frame!.portrait!.url}`;
 
-    //================================================================================================
-    // For with height video constraint
-    // if (!isLandscape) {
-    //   const scaleX = video.videoWidth / canvas.width;
-    //   const scaleY = video.videoHeight / canvas.height;
-    //   const scale = Math.max(scaleX, scaleY);
-    //   const sw = canvas.width * scale;
-    //   const sh = canvas.height * scale;
-    //   const sx = (video.videoWidth - sw) / 2;
-    //   const sy = (video.videoHeight - sh) / 2;
+      frame.onload = () => {
+        ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+        // const imageData = canvas.toDataURL("image/jpeg");
+        // props.setCapturedPhoto(imageData);
+      };
 
-    //   ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-    // } else {
-    //   const scale = Math.max(
-    //     canvas.width / video.videoWidth,
-    //     canvas.height / video.videoHeight
-    //   );
-    //   const sw = canvas.width / scale;
-    //   const sh = canvas.height / scale;
-    //   const sx = (video.videoWidth - sw) / 2;
-    //   const sy = (video.videoHeight - sh) / 2;
-    //   ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-    // }
-
-    // =================================================================================================
-    // Original logic
-    // const videoAspectRatio = video.videoWidth / video.videoHeight;
-    // const frameAspectRatio = canvas.width / canvas.height;
-    // let sx = 0,
-    //   sy = 0,
-    //   sw = video.videoWidth,
-    //   sh = video.videoHeight;
-    // if (videoAspectRatio > frameAspectRatio) {
-    //   // Video is wider than frame, crop horizontally
-    //   const cropWidth = video.videoWidth - video.videoHeight * frameAspectRatio;
-    //   sx = cropWidth / 2;
-    //   sw = video.videoWidth - cropWidth;
-    // } else if (videoAspectRatio < frameAspectRatio) {
-    //   // Video is taller than frame, crop vertically
-    //   const cropHeight =
-    //     video.videoHeight - video.videoWidth / frameAspectRatio;
-    //   sy = cropHeight / 2;
-    //   sh = video.videoHeight - cropHeight;
-    // }
-
-    // =================================================================================================
-    const scale = Math.max(
-      canvas.width / video.videoWidth,
-      canvas.height / video.videoHeight
-    );
-    const sw = canvas.width / scale;
-    const sh = canvas.height / scale;
-    const sx = (video.videoWidth - sw) / 2;
-    const sy = (video.videoHeight - sh) / 2;
-
-    // Draw the cropped video centered on the canvas
-    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-
-    // Restore the original context to stop flipping for the frame
-    if (facingMode === "user") {
-      ctx.restore();
-    }
-
-    const frame = new Image();
-    frame.crossOrigin = "anonymous";
-    // For production
-    // frame.src = isLandscape
-    //   ? props.frame!.landscape!.url
-    //   : props.frame!.portrait!.url;
-
-    // For dev only, do not use in production
-    frame.src = isLandscape
-      ? `https://api.allorigins.win/raw?url=${props.frame!.landscape!.url}`
-      : `https://api.allorigins.win/raw?url=${props.frame!.portrait!.url}`;
-
-    frame.onload = () => {
-      ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL("image/jpeg");
-      props.setCapturedPhoto(imageData);
+      frame.onerror = (err) => {
+        console.error("Error loading frame:", err);
+      };
     };
-
-    frame.onerror = (err) => {
-      console.error("Error loading frame:", err);
-    };
-
-    stopCamera();
-  }
-
-  const updateOrientation = useCallback(() => {
-    setIsLandscape(window.innerWidth > window.innerHeight);
-  }, []);
+  }, [isLandscape, props]);
 
   function closeTakePhotoWithFrame() {
     props.setCapturedPhoto(null);
-    stopCamera();
     props.onClose();
     close();
   }
@@ -216,94 +124,35 @@ function Camera(props: CameraProps) {
     setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
   }
 
-  const startCamera = useCallback(async () => {
-    if (cameraActive.current) return;
-    cameraActive.current = true;
-
-    stopCamera();
-
-    // const frameOverlay = frameRef.current;
-    // if (!frameOverlay) return;
-
-    // const frameRect = frameOverlay.getBoundingClientRect();
-    // const frameAspectRatio = frameRect.width / frameRect.height;
-
-    const constraints = {
-      video: {
-        audio: false,
-        facingMode: facingMode,
-        // width: { ideal: props.frame.portrait.outlineWidth },
-        // ...(!isLandscape && {
-        //   height: {
-        //     ideal: frameRect.width,
-        //   },
-        // }),
-      },
-    };
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-    } catch (error) {
-      console.error("Error accessing the camera:", error);
-    } finally {
-      cameraActive.current = false;
-    }
-
-    calculateFrameDimensions();
-  }, [calculateFrameDimensions, facingMode]);
-
-  function stopCamera() {
-    const stream = videoRef.current?.srcObject as MediaStream | null;
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-    }
-  }
-
-  useEffect(() => {
-    startCamera();
-    return () => {
-      stopCamera();
-    };
-  }, [startCamera]);
+  const updateOrientation = useCallback(() => {
+    setIsLandscape(window.innerWidth > window.innerHeight);
+  }, []);
 
   useEffect(() => {
     updateOrientation();
 
     function handleResize() {
       updateOrientation();
-      // Handles resizing the video feed to fit the frame depending on orientation
-      startCamera();
-    }
-
-    function handleVisibilityChange() {
-      if (document.hidden) {
-        stopCamera();
-      } else {
-        startCamera();
-      }
     }
 
     window.addEventListener("resize", handleResize);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
       window.removeEventListener("resize", handleResize);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [updateOrientation, startCamera]);
+  }, [updateOrientation]);
 
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
       <div className={styles.cameraWrapper}>
-        <video
-          ref={videoRef}
-          playsInline={true}
+        <Webcam
+          ref={webcamRef}
+          videoConstraints={videoConstraints}
           className={`${styles.cameraFeed} ${
             facingMode === "user" ? styles.reverse : ""
           }`}
+          screenshotFormat="image/jpeg"
+          forceScreenshotSourceSize
+          screenshotQuality={1}
         />
         <img
           ref={frameRef}
