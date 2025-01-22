@@ -87,9 +87,64 @@ function Camera(props: CameraProps) {
     }
 
     // Scale video to fit frame's resolution
+
+    // =================================================================================================
+    // const frameRect = frameOverlay.getBoundingClientRect();
+    // const videoRatio = video.videoWidth / video.videoHeight;
+    // const frameRatio = frameRect.width / frameRect.height; // Frame overlay's aspect ratio
+    // let sw, sh, sx, sy;
+    // if (videoRatio > frameRatio) {
+    //   // Video is wider than the frame -> Crop width (Sides already correct)
+    //   sh = video.videoHeight;
+    //   sw = sh * frameRatio;
+    //   sx = (video.videoWidth - sw) / 2;
+    //   sy = 0;
+    // } else {
+    //   // Video is taller than the frame -> Crop height (Fix for top/bottom issue)
+    //   sw = video.videoWidth;
+    //   sh = sw / frameRatio;
+
+    //   // Make sure we're not seeing extra scene at top/bottom
+    //   if (sh > video.videoHeight) {
+    //     sh = video.videoHeight;
+    //   }
+
+    //   sx = 0;
+    //   sy = (video.videoHeight - sh) / 2;
+    // }
+
+    //================================================================================================
+    // For with height video constraint
+    // const scaleX = video.videoWidth / canvas.width;
+    // const scaleY = video.videoHeight / canvas.height;
+    // const scale = Math.max(scaleX, scaleY);
+    // const sw = canvas.width * scale;
+    // const sh = canvas.height * scale;
+    // const sx = (video.videoWidth - sw) / 2;
+    // const sy = (video.videoHeight - sh) / 2;
+
+    // =================================================================================================
+    // Original logic
     // const videoAspectRatio = video.videoWidth / video.videoHeight;
     // const frameAspectRatio = canvas.width / canvas.height;
+    // let sx = 0,
+    //   sy = 0,
+    //   sw = video.videoWidth,
+    //   sh = video.videoHeight;
+    // if (videoAspectRatio > frameAspectRatio) {
+    //   // Video is wider than frame, crop horizontally
+    //   const cropWidth = video.videoWidth - video.videoHeight * frameAspectRatio;
+    //   sx = cropWidth / 2;
+    //   sw = video.videoWidth - cropWidth;
+    // } else if (videoAspectRatio < frameAspectRatio) {
+    //   // Video is taller than frame, crop vertically
+    //   const cropHeight =
+    //     video.videoHeight - video.videoWidth / frameAspectRatio;
+    //   sy = cropHeight / 2;
+    //   sh = video.videoHeight - cropHeight;
+    // }
 
+    // =================================================================================================
     const scale = Math.max(
       canvas.width / video.videoWidth,
       canvas.height / video.videoHeight
@@ -109,9 +164,15 @@ function Camera(props: CameraProps) {
 
     const frame = new Image();
     frame.crossOrigin = "anonymous";
+    // For production
+    // frame.src = isLandscape
+    //   ? props.frame!.landscape!.url
+    //   : props.frame!.portrait!.url;
+
+    // For dev only, do not use in production
     frame.src = isLandscape
-      ? props.frame!.landscape!.url
-      : props.frame!.portrait!.url;
+      ? `https://api.allorigins.win/raw?url=${props.frame!.landscape!.url}`
+      : `https://api.allorigins.win/raw?url=${props.frame!.portrait!.url}`;
 
     frame.onload = () => {
       ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
