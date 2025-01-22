@@ -40,58 +40,32 @@ function Camera(props: CameraProps) {
   const frameRef = useRef<HTMLImageElement>(null);
   const [facingMode, setFacingMode] = useState("environment");
   const [isLandscape, setIsLandscape] = useState(false);
-  const [frameDimensions, setFrameDimensions] = useState({
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-  });
+
+  const frameHeight = isLandscape
+    ? props.frame.landscape.frameHeight
+    : props.frame.portrait.frameHeight;
+  const frameWidth = isLandscape
+    ? props.frame.landscape.frameWidth
+    : props.frame.portrait.frameWidth;
+
+  const scaleRatio = isLandscape ? 7680 / frameWidth : 4320 / frameWidth;
 
   const videoConstraints = {
     facingMode: facingMode,
-    width: { ideal: 4096 }, // Attempt to use the maximum width supported
-    height: { ideal: 2160 }, // Attempt to use the maximum height supported
+    width: { ideal: frameHeight * scaleRatio }, // Attempt to use the maximum width supported
+    height: { ideal: frameWidth * scaleRatio }, // Attempt to use the maximum height supported
     audio: false,
   };
 
-  const calculateFrameDimensions = useCallback(() => {
-    const frame = frameRef.current;
-    const container = frame?.parentElement;
+  // const cameraWidthLandscape =
+  //   props.frame.landscape.outlineWidth / props.frame.landscape.frameWidth;
+  // const cameraWidthPortrait =
+  //   props.frame.portrait.outlineWidth / props.frame.portrait.frameWidth;
 
-    if (!frame || !container) return;
-
-    const containerRect = container.getBoundingClientRect();
-
-    // Get the natural aspect ratio of the frame image
-    const frameAspectRatio = frame.naturalWidth / frame.naturalHeight;
-    const containerAspectRatio = containerRect.width / containerRect.height;
-
-    let frameWidth, frameHeight;
-
-    // Calculate actual rendered dimensions based on object-fit: contain
-    if (frameAspectRatio > containerAspectRatio) {
-      // Frame is wider relative to container - will fit to width
-      frameWidth = containerRect.width;
-      frameHeight = containerRect.width / frameAspectRatio;
-    } else {
-      // Frame is taller relative to container - will fit to height
-      frameHeight = containerRect.height;
-      frameWidth = containerRect.height * frameAspectRatio;
-    }
-
-    const top =
-      ((containerRect.height - frameHeight) / 2 / containerRect.height) * 100;
-    const bottom = top;
-    const left =
-      ((containerRect.width - frameWidth) / 2 / containerRect.width) * 100;
-    const right = left;
-
-    setFrameDimensions({ top, bottom, left, right });
-  }, []);
-
-  const handleFrameLoad = useCallback(() => {
-    calculateFrameDimensions();
-  }, [calculateFrameDimensions]);
+  // const cameraHeightLandscape =
+  //   props.frame.landscape.outlineHeight / props.frame.landscape.frameHeight;
+  // const cameraHeightPortrait =
+  //   props.frame.portrait.outlineHeight / props.frame.portrait.frameHeight;
 
   const capturePhoto = useCallback(() => {
     const canvas = canvasRef.current;
@@ -112,7 +86,21 @@ function Camera(props: CameraProps) {
     if (!imageSrc) return;
 
     // For testing camera quality only
-    props.setCapturedPhoto(imageSrc);
+    // props.setCapturedPhoto(imageSrc);
+
+    // const cameraWidth = isLandscape
+    //   ? cameraWidthLandscape
+    //   : cameraWidthPortrait;
+    // const cameraHeight = isLandscape
+    //   ? cameraHeightLandscape
+    //   : cameraHeightPortrait;
+
+    // const outlineLeft = isLandscape
+    //   ? props.frame.landscape.outlineLeft
+    //   : props.frame.portrait.outlineLeft;
+    // const outlineTop = isLandscape
+    //   ? props.frame.landscape.outlineTop
+    //   : props.frame.portrait.outlineTop;
 
     const img = new Image();
     img.src = imageSrc;
@@ -129,8 +117,8 @@ function Camera(props: CameraProps) {
 
       frame.onload = () => {
         ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-        // const imageData = canvas.toDataURL("image/jpeg");
-        // props.setCapturedPhoto(imageData);
+        const imageData = canvas.toDataURL("image/jpeg");
+        props.setCapturedPhoto(imageData);
       };
 
       frame.onerror = (err) => {
@@ -156,24 +144,11 @@ function Camera(props: CameraProps) {
   useEffect(() => {
     updateOrientation();
 
-    function handleResize() {
-      updateOrientation();
-    }
-
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", updateOrientation);
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", updateOrientation);
     };
   }, [updateOrientation]);
-
-  const cameraWidthLanscape = `${
-    (props.frame.landscape.outlineWidth / props.frame.landscape.frameWidth) *
-    100
-  }%`;
-
-  const cameraWidthPortrait = `${
-    (props.frame.portrait.outlineWidth / props.frame.portrait.frameWidth) * 100
-  }%`;
 
   return (
     <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
@@ -184,7 +159,8 @@ function Camera(props: CameraProps) {
           className={`${styles.cameraFeed} ${
             facingMode === "user" ? styles.reverse : ""
           }`}
-          width={isLandscape ? cameraWidthLanscape : cameraWidthPortrait}
+          width={"100%"}
+          height={"100%"}
           screenshotFormat="image/jpeg"
           mirrored={facingMode === "user"}
           imageSmoothing
@@ -200,23 +176,6 @@ function Camera(props: CameraProps) {
           }
           alt="Frame overlay"
           className={styles.frameOverlay}
-          onLoad={handleFrameLoad}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayTop}`}
-          style={{ height: `${frameDimensions.top}%` }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayBottom}`}
-          style={{ height: `${frameDimensions.bottom}%` }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayLeft}`}
-          style={{ width: `${frameDimensions.left}%` }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayRight}`}
-          style={{ width: `${frameDimensions.right}%` }}
         />
       </div>
       <div className={styles.controls}>
