@@ -220,6 +220,8 @@ function Camera(props: CameraProps) {
     if (cameraActive.current) return;
     cameraActive.current = true;
 
+    stopCamera();
+
     // const frameOverlay = frameRef.current;
     // if (!frameOverlay) return;
 
@@ -230,6 +232,7 @@ function Camera(props: CameraProps) {
       video: {
         audio: false,
         facingMode: facingMode,
+        // width: { ideal: props.frame.portrait.outlineWidth },
         // ...(!isLandscape && {
         //   height: {
         //     ideal: frameRect.width,
