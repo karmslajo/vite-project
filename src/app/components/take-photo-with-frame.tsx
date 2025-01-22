@@ -115,27 +115,27 @@ function Camera(props: CameraProps) {
 
     //================================================================================================
     // For with height video constraint
-    if (!isLandscape) {
-      const scaleX = video.videoWidth / canvas.width;
-      const scaleY = video.videoHeight / canvas.height;
-      const scale = Math.max(scaleX, scaleY);
-      const sw = canvas.width * scale;
-      const sh = canvas.height * scale;
-      const sx = (video.videoWidth - sw) / 2;
-      const sy = (video.videoHeight - sh) / 2;
+    // if (!isLandscape) {
+    //   const scaleX = video.videoWidth / canvas.width;
+    //   const scaleY = video.videoHeight / canvas.height;
+    //   const scale = Math.max(scaleX, scaleY);
+    //   const sw = canvas.width * scale;
+    //   const sh = canvas.height * scale;
+    //   const sx = (video.videoWidth - sw) / 2;
+    //   const sy = (video.videoHeight - sh) / 2;
 
-      ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-    } else {
-      const scale = Math.max(
-        canvas.width / video.videoWidth,
-        canvas.height / video.videoHeight
-      );
-      const sw = canvas.width / scale;
-      const sh = canvas.height / scale;
-      const sx = (video.videoWidth - sw) / 2;
-      const sy = (video.videoHeight - sh) / 2;
-      ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-    }
+    //   ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    // } else {
+    //   const scale = Math.max(
+    //     canvas.width / video.videoWidth,
+    //     canvas.height / video.videoHeight
+    //   );
+    //   const sw = canvas.width / scale;
+    //   const sh = canvas.height / scale;
+    //   const sx = (video.videoWidth - sw) / 2;
+    //   const sy = (video.videoHeight - sh) / 2;
+    //   ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    // }
 
     // =================================================================================================
     // Original logic
@@ -159,17 +159,17 @@ function Camera(props: CameraProps) {
     // }
 
     // =================================================================================================
-    // const scale = Math.max(
-    //   canvas.width / video.videoWidth,
-    //   canvas.height / video.videoHeight
-    // );
-    // const sw = canvas.width / scale;
-    // const sh = canvas.height / scale;
-    // const sx = (video.videoWidth - sw) / 2;
-    // const sy = (video.videoHeight - sh) / 2;
+    const scale = Math.max(
+      canvas.width / video.videoWidth,
+      canvas.height / video.videoHeight
+    );
+    const sw = canvas.width / scale;
+    const sh = canvas.height / scale;
+    const sx = (video.videoWidth - sw) / 2;
+    const sy = (video.videoHeight - sh) / 2;
 
     // Draw the cropped video centered on the canvas
-    // ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
     // Restore the original context to stop flipping for the frame
     if (facingMode === "user") {
@@ -190,7 +190,7 @@ function Camera(props: CameraProps) {
 
     frame.onload = () => {
       ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL("image/jpg");
+      const imageData = canvas.toDataURL("image/jpeg");
       props.setCapturedPhoto(imageData);
     };
 
@@ -220,21 +220,21 @@ function Camera(props: CameraProps) {
     if (cameraActive.current) return;
     cameraActive.current = true;
 
-    const frameOverlay = frameRef.current;
-    if (!frameOverlay) return;
+    // const frameOverlay = frameRef.current;
+    // if (!frameOverlay) return;
 
-    const frameRect = frameOverlay.getBoundingClientRect();
+    // const frameRect = frameOverlay.getBoundingClientRect();
     // const frameAspectRatio = frameRect.width / frameRect.height;
 
     const constraints = {
       video: {
         audio: false,
         facingMode: facingMode,
-        ...(!isLandscape && {
-          height: {
-            ideal: frameRect.width,
-          },
-        }),
+        // ...(!isLandscape && {
+        //   height: {
+        //     ideal: frameRect.width,
+        //   },
+        // }),
       },
     };
 
@@ -251,7 +251,7 @@ function Camera(props: CameraProps) {
     }
 
     calculateFrameDimensions();
-  }, [calculateFrameDimensions, facingMode, isLandscape]);
+  }, [calculateFrameDimensions, facingMode]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -276,9 +276,19 @@ function Camera(props: CameraProps) {
       startCamera();
     }
 
+    function handleVisibilityChange() {
+      if (document.hidden) {
+        stopCamera();
+      } else {
+        startCamera();
+      }
+    }
+
     window.addEventListener("resize", handleResize);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
       window.removeEventListener("resize", handleResize);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [updateOrientation, startCamera]);
 
@@ -374,17 +384,19 @@ function ResultPhoto(props: ResultPhotoProps) {
     }
   }
 
-  function shareImage() {
+  async function shareImage() {
     try {
       if (!props.capturedPhoto) {
         console.error("Captured photo is null");
         return;
       }
 
+      const blob = await fetch(props.capturedPhoto).then((res) => res.blob());
+
       const file = new File(
-        [props.capturedPhoto],
-        `gump_${props.frame?.name}_frame_photo_${Date.now()}.jpg`,
-        { type: "image/jpg" }
+        [blob],
+        `gump_${props.frame?.name}_${Date.now()}.jpeg`,
+        { type: "image/jpeg" }
       );
 
       const shareData = {
