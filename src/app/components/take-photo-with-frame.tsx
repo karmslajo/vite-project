@@ -112,7 +112,7 @@ function Camera(props: CameraProps) {
     if (!imageSrc) return;
 
     // For testing camera quality only
-    // props.setCapturedPhoto(imageSrc);
+    props.setCapturedPhoto(imageSrc);
 
     const img = new Image();
     img.src = imageSrc;
@@ -129,8 +129,8 @@ function Camera(props: CameraProps) {
 
       frame.onload = () => {
         ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-        const imageData = canvas.toDataURL("image/jpeg");
-        props.setCapturedPhoto(imageData);
+        // const imageData = canvas.toDataURL("image/jpeg");
+        // props.setCapturedPhoto(imageData);
       };
 
       frame.onerror = (err) => {
