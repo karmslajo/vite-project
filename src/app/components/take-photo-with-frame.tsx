@@ -23,6 +23,10 @@ function Camera(props: CameraProps) {
     left: 0,
     right: 0,
   });
+  const [videoDimensions, setVideoDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
 
   const calculateFrameDimensions = useCallback(() => {
     const frame = frameRef.current;
@@ -59,6 +63,34 @@ function Camera(props: CameraProps) {
     setFrameDimensions({ top, bottom, left, right });
   }, []);
 
+  const calculateVideoSize = useCallback(() => {
+    const frame = frameRef.current;
+    const video = videoRef.current;
+    const container = video?.parentElement;
+
+    if (!frame || !container || !video) return;
+
+    const containerRect = container.getBoundingClientRect();
+
+    // Get aspect ratios
+    const containerAspectRatio = containerRect.width / containerRect.height;
+    const videoAspectRatio = video.videoWidth / video.videoHeight;
+
+    let videoWidth, videoHeight;
+
+    // Calculate video's actual displayed size (matching object-fit: contain)
+    if (videoAspectRatio > containerAspectRatio) {
+      videoWidth = containerRect.width;
+      videoHeight = containerRect.width / videoAspectRatio;
+    } else {
+      videoHeight = containerRect.height;
+      videoWidth = containerRect.height * videoAspectRatio;
+    }
+
+    // Set state to store video size
+    setVideoDimensions({ width: videoWidth, height: videoHeight });
+  }, []);
+
   const handleFrameLoad = useCallback(() => {
     calculateFrameDimensions();
   }, [calculateFrameDimensions]);
@@ -76,8 +108,8 @@ function Camera(props: CameraProps) {
     ctx.imageSmoothingQuality = "high";
 
     // Set canvas to frame's original resolution
-    canvas.width = frameOverlay.naturalWidth;
-    canvas.height = frameOverlay.naturalHeight;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
     // Flip the context horizontally for the video only
     if (facingMode === "user") {
@@ -159,17 +191,17 @@ function Camera(props: CameraProps) {
     // }
 
     // =================================================================================================
-    const scale = Math.max(
-      canvas.width / video.videoWidth,
-      canvas.height / video.videoHeight
-    );
-    const sw = canvas.width / scale;
-    const sh = canvas.height / scale;
-    const sx = (video.videoWidth - sw) / 2;
-    const sy = (video.videoHeight - sh) / 2;
+    // const scale = Math.max(
+    //   canvas.width / video.videoWidth,
+    //   canvas.height / video.videoHeight
+    // );
+    // const sw = canvas.width / scale;
+    // const sh = canvas.height / scale;
+    // const sx = (video.videoWidth - sw) / 2;
+    // const sy = (video.videoHeight - sh) / 2;
 
     // Draw the cropped video centered on the canvas
-    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Restore the original context to stop flipping for the frame
     if (facingMode === "user") {
@@ -232,12 +264,8 @@ function Camera(props: CameraProps) {
       video: {
         audio: false,
         facingMode: facingMode,
-        // width: { ideal: props.frame.portrait.outlineWidth },
-        // ...(!isLandscape && {
-        //   height: {
-        //     ideal: frameRect.width,
-        //   },
-        // }),
+        width: { ideal: isLandscape ? 7680 : 4320 },
+        height: { ideal: isLandscape ? 4320 : 7680 },
       },
     };
 
@@ -254,7 +282,8 @@ function Camera(props: CameraProps) {
     }
 
     calculateFrameDimensions();
-  }, [calculateFrameDimensions, facingMode]);
+    calculateVideoSize();
+  }, [calculateFrameDimensions, calculateVideoSize, facingMode, isLandscape]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -315,6 +344,10 @@ function Camera(props: CameraProps) {
           alt="Frame overlay"
           className={styles.frameOverlay}
           onLoad={handleFrameLoad}
+          style={{
+            height: videoDimensions.height,
+            width: videoDimensions.width,
+          }}
         />
         <div
           className={`${styles.overlayMask} ${styles.overlayTop}`}
