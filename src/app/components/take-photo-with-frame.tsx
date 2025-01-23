@@ -40,6 +40,10 @@ function Camera(props: CameraProps) {
   const frameRef = useRef<HTMLImageElement>(null);
   const [facingMode, setFacingMode] = useState("environment");
   const [isLandscape, setIsLandscape] = useState(false);
+  const [videoDimensions, setVideoDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
 
   const frameHeight = isLandscape
     ? props.frame.landscape.frameHeight
@@ -67,20 +71,47 @@ function Camera(props: CameraProps) {
   // const cameraHeightPortrait =
   //   props.frame.portrait.outlineHeight / props.frame.portrait.frameHeight;
 
+  const calculateDisplayedSizes = useCallback(() => {
+    const frame = frameRef.current;
+    const video = webcamRef.current?.video;
+    const container = webcamRef.current?.video?.parentElement;
+
+    if (!frame || !container || !video) return;
+
+    const containerRect = container.getBoundingClientRect();
+
+    // Get aspect ratios
+    const containerAspectRatio = containerRect.width / containerRect.height;
+    const videoAspectRatio = video.videoWidth / video.videoHeight;
+
+    let videoWidth, videoHeight;
+
+    // Calculate video's actual displayed size (matching object-fit: contain)
+    if (videoAspectRatio > containerAspectRatio) {
+      videoWidth = containerRect.width;
+      videoHeight = containerRect.width / videoAspectRatio;
+    } else {
+      videoHeight = containerRect.height;
+      videoWidth = containerRect.height * videoAspectRatio;
+    }
+
+    // Set state to store video size
+    setVideoDimensions({ width: videoWidth, height: videoHeight });
+  }, []);
   const capturePhoto = useCallback(() => {
     const canvas = canvasRef.current;
     const frameOverlay = frameRef.current;
     const webcam = webcamRef.current;
 
-    if (!canvas || !webcam || !frameOverlay) return;
+    if (!canvas || !webcam || !frameOverlay || !webcam.video) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    canvas.width = frameOverlay.naturalWidth;
-    canvas.height = frameOverlay.naturalHeight;
+    canvas.width = webcam.video.videoWidth;
+    canvas.height = webcam.video?.videoHeight;
 
     const imageSrc = webcamRef.current.getScreenshot();
     if (!imageSrc) return;
@@ -166,16 +197,25 @@ function Camera(props: CameraProps) {
           imageSmoothing
           forceScreenshotSourceSize
           screenshotQuality={1}
+          onLoadedMetadata={calculateDisplayedSizes}
         />
         <img
           ref={frameRef}
           src={
             isLandscape
-              ? props.frame!.landscape!.url
-              : props.frame!.portrait!.url
+              ? `https://api.allorigins.win/raw?url=${
+                  props.frame!.landscape!.url
+                }`
+              : `https://api.allorigins.win/raw?url=${
+                  props.frame!.portrait!.url
+                }`
           }
           alt="Frame overlay"
           className={styles.frameOverlay}
+          style={{
+            height: videoDimensions.height,
+            width: videoDimensions.width,
+          }}
         />
       </div>
       <div className={styles.controls}>
