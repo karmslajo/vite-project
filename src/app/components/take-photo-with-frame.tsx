@@ -17,7 +17,9 @@ function Camera(props: CameraProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLImageElement>(null);
   const [facingMode, setFacingMode] = useState("user");
-  const [isLandscape, setIsLandscape] = useState(false);
+  const [orientationDirection, setOrientationDirection] = useState<
+    "portrait" | "landscapeLeft" | "landscapeRight" | null
+  >(null);
   const [frameDimensions, setFrameDimensions] = useState({
     top: 0,
     bottom: 0,
@@ -28,6 +30,16 @@ function Camera(props: CameraProps) {
     width: 0,
     height: 0,
   });
+
+  const isLandscape =
+    orientationDirection === "landscapeLeft" ||
+    orientationDirection === "landscapeRight";
+
+  const orientationDirectionStyle = {
+    portrait: "",
+    landscapeLeft: styles.landscapeLeft,
+    landscapeRight: styles.landscapeRight,
+  };
 
   const calculateFrameDimensions = useCallback(() => {
     const frame = frameRef.current;
@@ -153,7 +165,17 @@ function Camera(props: CameraProps) {
   }
 
   const updateOrientation = useCallback(() => {
-    setIsLandscape(window.innerWidth > window.innerHeight);
+    const angle = window.screen.orientation.angle;
+
+    if (angle === 0) {
+      setOrientationDirection("portrait");
+    } else if (angle === 90) {
+      setOrientationDirection("landscapeRight"); // Device flipped to the right
+    } else if (angle === 270) {
+      setOrientationDirection("landscapeLeft"); // Device flipped to the left
+    } else {
+      setOrientationDirection(null);
+    }
   }, []);
 
   function closeTakePhotoWithFrame() {
@@ -246,7 +268,12 @@ function Camera(props: CameraProps) {
   }, [updateOrientation, startCamera]);
 
   return (
-    <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
+    <div
+      className={`${styles.takePhotoWithFrameContainer} ${
+        orientationDirection && orientationDirectionStyle[orientationDirection]
+      }`}
+      ref={elNodeRef}
+    >
       <div className={styles.cameraWrapper}>
         <video
           ref={videoRef}
