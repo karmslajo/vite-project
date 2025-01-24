@@ -133,14 +133,8 @@
   width: 100vw;
   background-color: black;
 
-  &.landscapeRight {
-    // Controls on the right side of device
+  @media (orientation: landscape) {
     flex-direction: row;
-  }
-
-  &.landscapeLeft {
-    // Controls on the left side of device
-    flex-direction: row-reverse;
   }
 
   .cameraWrapper {
@@ -150,7 +144,6 @@
     justify-content: center;
     align-items: center;
     background: black;
-    color: white;
 
     .cameraFeed {
       object-fit: contain;

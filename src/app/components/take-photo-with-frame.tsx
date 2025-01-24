@@ -17,9 +17,7 @@ function Camera(props: CameraProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLImageElement>(null);
   const [facingMode, setFacingMode] = useState("user");
-  const [orientationDirection, setOrientationDirection] = useState<
-    "portrait" | "landscapeLeft" | "landscapeRight" | null
-  >(null);
+  const [isLandscape, setIsLandscape] = useState(false);
   const [frameDimensions, setFrameDimensions] = useState({
     top: 0,
     bottom: 0,
@@ -31,15 +29,7 @@ function Camera(props: CameraProps) {
     height: 0,
   });
 
-  const isLandscape =
-    orientationDirection === "landscapeLeft" ||
-    orientationDirection === "landscapeRight";
-
-  const orientationDirectionStyle = {
-    portrait: "",
-    landscapeLeft: styles.landscapeLeft,
-    landscapeRight: styles.landscapeRight,
-  };
+  const  ios = false
 
   const calculateFrameDimensions = useCallback(() => {
     const frame = frameRef.current;
@@ -165,17 +155,7 @@ function Camera(props: CameraProps) {
   }
 
   const updateOrientation = useCallback(() => {
-    const angle = window.screen.orientation.angle;
-
-    if (angle === 0) {
-      setOrientationDirection("portrait");
-    } else if (angle === 90) {
-      setOrientationDirection("landscapeRight"); // Device flipped to the right
-    } else if (angle === 270) {
-      setOrientationDirection("landscapeLeft"); // Device flipped to the left
-    } else {
-      setOrientationDirection(null);
-    }
+    setIsLandscape(window.innerWidth > window.innerHeight);
   }, []);
 
   function closeTakePhotoWithFrame() {
@@ -233,8 +213,6 @@ function Camera(props: CameraProps) {
     }
   }
 
-  const ios = true;
-
   useEffect(() => {
     startCamera();
     return () => {
@@ -268,12 +246,7 @@ function Camera(props: CameraProps) {
   }, [updateOrientation, startCamera]);
 
   return (
-    <div
-      className={`${styles.takePhotoWithFrameContainer} ${
-        orientationDirection && orientationDirectionStyle[orientationDirection]
-      }`}
-      ref={elNodeRef}
-    >
+    <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
       <div className={styles.cameraWrapper}>
         <video
           ref={videoRef}
