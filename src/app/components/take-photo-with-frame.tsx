@@ -20,6 +20,7 @@ function Camera(props: CameraProps) {
   const [orientationDirection, setOrientationDirection] = useState<
     "portrait" | "landscapeLeft" | "landscapeRight" | null
   >(null);
+  const [temp, setTemp] = useState(0);
   const [frameDimensions, setFrameDimensions] = useState({
     top: 0,
     bottom: 0,
@@ -167,6 +168,8 @@ function Camera(props: CameraProps) {
   const updateOrientation = useCallback(() => {
     const angle = window.screen.orientation.angle;
 
+    setTemp(angle);
+
     if (angle === 0) {
       setOrientationDirection("portrait");
     } else if (angle === 90) {
@@ -274,46 +277,7 @@ function Camera(props: CameraProps) {
       }`}
       ref={elNodeRef}
     >
-      <div className={styles.cameraWrapper}>
-        <video
-          ref={videoRef}
-          playsInline={true}
-          className={`${styles.cameraFeed} ${
-            facingMode === "user" ? styles.reverse : ""
-          }`}
-        />
-        <img
-          ref={frameRef}
-          src={
-            isLandscape
-              ? props.frame!.landscape!.url
-              : props.frame!.portrait!.url
-          }
-          alt="Frame overlay"
-          className={styles.frameOverlay}
-          onLoad={handleFrameLoad}
-          style={{
-            height: videoDimensions.height,
-            width: videoDimensions.width,
-          }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayTop}`}
-          style={{ height: `${frameDimensions.top}%` }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayBottom}`}
-          style={{ height: `${frameDimensions.bottom}%` }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayLeft}`}
-          style={{ width: `${frameDimensions.left}%` }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayRight}`}
-          style={{ width: `${frameDimensions.right}%` }}
-        />
-      </div>
+      <div className={styles.cameraWrapper}>{temp}</div>
       <div className={`${styles.controls} ${ios ? styles.iosMargin : ""}`}>
         <div
           onClick={closeTakePhotoWithFrame}
