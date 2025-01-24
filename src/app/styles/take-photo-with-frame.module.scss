@@ -205,7 +205,7 @@
     width: 100%;
 
     &.iosMargin {
-      margin-bottom: 10%;
+      padding-bottom: 12%;
     }
 
     @media (orientation: landscape) {
@@ -214,8 +214,7 @@
       width: 125px;
 
       &.iosMargin {
-        margin-bottom: 0;
-        margin-right: 5%;
+        padding-bottom: 0;
       }
     }
 
