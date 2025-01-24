@@ -2,6 +2,7 @@
 import { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
 import styles from "../styles/take-photo-with-frame.module.scss";
+import { MediaLongPressTooltip } from "./media-long-press-tooltip";
 
 type CameraProps = {
   frame: any;
@@ -15,7 +16,7 @@ function Camera(props: CameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLImageElement>(null);
-  const [facingMode, setFacingMode] = useState("environment");
+  const [facingMode, setFacingMode] = useState("user");
   const [isLandscape, setIsLandscape] = useState(false);
   const [frameDimensions, setFrameDimensions] = useState({
     top: 0,
@@ -118,88 +119,6 @@ function Camera(props: CameraProps) {
       ctx.scale(-1, 1);
     }
 
-    // Scale video to fit frame's resolution
-
-    // =================================================================================================
-    // const frameRect = frameOverlay.getBoundingClientRect();
-    // const videoRatio = video.videoWidth / video.videoHeight;
-    // const frameRatio = frameRect.width / frameRect.height; // Frame overlay's aspect ratio
-    // let sw, sh, sx, sy;
-    // if (videoRatio > frameRatio) {
-    //   // Video is wider than the frame -> Crop width (Sides already correct)
-    //   sh = video.videoHeight;
-    //   sw = sh * frameRatio;
-    //   sx = (video.videoWidth - sw) / 2;
-    //   sy = 0;
-    // } else {
-    //   // Video is taller than the frame -> Crop height (Fix for top/bottom issue)
-    //   sw = video.videoWidth;
-    //   sh = sw / frameRatio;
-
-    //   // Make sure we're not seeing extra scene at top/bottom
-    //   if (sh > video.videoHeight) {
-    //     sh = video.videoHeight;
-    //   }
-
-    //   sx = 0;
-    //   sy = (video.videoHeight - sh) / 2;
-    // }
-
-    //================================================================================================
-    // For with height video constraint
-    // if (!isLandscape) {
-    //   const scaleX = video.videoWidth / canvas.width;
-    //   const scaleY = video.videoHeight / canvas.height;
-    //   const scale = Math.max(scaleX, scaleY);
-    //   const sw = canvas.width * scale;
-    //   const sh = canvas.height * scale;
-    //   const sx = (video.videoWidth - sw) / 2;
-    //   const sy = (video.videoHeight - sh) / 2;
-
-    //   ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-    // } else {
-    //   const scale = Math.max(
-    //     canvas.width / video.videoWidth,
-    //     canvas.height / video.videoHeight
-    //   );
-    //   const sw = canvas.width / scale;
-    //   const sh = canvas.height / scale;
-    //   const sx = (video.videoWidth - sw) / 2;
-    //   const sy = (video.videoHeight - sh) / 2;
-    //   ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-    // }
-
-    // =================================================================================================
-    // Original logic
-    // const videoAspectRatio = video.videoWidth / video.videoHeight;
-    // const frameAspectRatio = canvas.width / canvas.height;
-    // let sx = 0,
-    //   sy = 0,
-    //   sw = video.videoWidth,
-    //   sh = video.videoHeight;
-    // if (videoAspectRatio > frameAspectRatio) {
-    //   // Video is wider than frame, crop horizontally
-    //   const cropWidth = video.videoWidth - video.videoHeight * frameAspectRatio;
-    //   sx = cropWidth / 2;
-    //   sw = video.videoWidth - cropWidth;
-    // } else if (videoAspectRatio < frameAspectRatio) {
-    //   // Video is taller than frame, crop vertically
-    //   const cropHeight =
-    //     video.videoHeight - video.videoWidth / frameAspectRatio;
-    //   sy = cropHeight / 2;
-    //   sh = video.videoHeight - cropHeight;
-    // }
-
-    // =================================================================================================
-    // const scale = Math.max(
-    //   canvas.width / video.videoWidth,
-    //   canvas.height / video.videoHeight
-    // );
-    // const sw = canvas.width / scale;
-    // const sh = canvas.height / scale;
-    // const sx = (video.videoWidth - sw) / 2;
-    // const sy = (video.videoHeight - sh) / 2;
-
     // Draw the cropped video centered on the canvas
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
@@ -292,6 +211,8 @@ function Camera(props: CameraProps) {
     }
   }
 
+  const ios = true;
+
   useEffect(() => {
     startCamera();
     return () => {
@@ -366,7 +287,7 @@ function Camera(props: CameraProps) {
           style={{ width: `${frameDimensions.right}%` }}
         />
       </div>
-      <div className={styles.controls}>
+      <div className={`${styles.controls} ${ios ? styles.iosMargin : ""}`}>
         <div
           onClick={closeTakePhotoWithFrame}
           className={`${styles.controlButton} ${styles.close}`}
@@ -392,6 +313,7 @@ type ResultPhotoProps = {
 };
 
 function ResultPhoto(props: ResultPhotoProps) {
+  const [showTooltip, setShowTooltip] = useState(true);
   const [showLongPressComponents, setShowLongPressComponents] = useState(false);
   const [photoOrientation, setPhotoOrientation] = useState<string | null>(null);
   const [isLandscape, setIsLandscape] = useState(false);
@@ -400,6 +322,7 @@ function ResultPhoto(props: ResultPhotoProps) {
 
   function handleTouchStart() {
     longPressTimerRef.current = setTimeout(() => {
+      setShowTooltip(false);
       setShowLongPressComponents(true);
     }, 750);
   }
@@ -414,9 +337,14 @@ function ResultPhoto(props: ResultPhotoProps) {
     const hashtags = hashtagsRef.current?.textContent;
 
     if (hashtags) {
-      navigator.clipboard.writeText(hashtags).catch((err) => {
-        console.error("Failed to copy hashtags: ", err);
-      });
+      navigator.clipboard
+        .writeText(hashtags)
+        .then(() => {
+          alert("Hashtags Copied!");
+        })
+        .catch((err) => {
+          console.error("Failed to copy hashtags: ", err);
+        });
     }
   }
 
@@ -502,6 +430,13 @@ function ResultPhoto(props: ResultPhotoProps) {
           }}
         />
       </div>
+      {showTooltip && (
+        <MediaLongPressTooltip
+          show={true}
+          onLongPressStart={handleTouchStart}
+          onLongPressEnd={handleTouchEnd}
+        />
+      )}
       <img
         className={`${
           styles.resultPhoto

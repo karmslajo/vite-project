@@ -204,10 +204,19 @@
     height: 125px;
     width: 100%;
 
+    &.iosMargin {
+      margin-bottom: 10%;
+    }
+
     @media (orientation: landscape) {
       flex-direction: column-reverse;
       height: 100%;
       width: 125px;
+
+      &.iosMargin {
+        margin-bottom: 0;
+        margin-right: 5%;
+      }
     }
 
     .controlButton {
