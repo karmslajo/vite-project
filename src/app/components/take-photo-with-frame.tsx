@@ -247,20 +247,11 @@ function ResultPhoto(props: ResultPhotoProps) {
   const [showLongPressComponents, setShowLongPressComponents] = useState(false);
   const [photoOrientation, setPhotoOrientation] = useState<string | null>(null);
   const [isLandscape, setIsLandscape] = useState(false);
-  const longPressTimerRef = useRef<any>(null);
   const hashtagsRef = useRef<HTMLDivElement | null>(null);
 
-  function handleTouchStart() {
-    longPressTimerRef.current = setTimeout(() => {
-      setShowTooltip(false);
-      setShowLongPressComponents(true);
-    }, 1000);
-  }
-
-  function handleTouchEnd() {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-    }
+  function handleContextMenu() {
+    setShowTooltip(false);
+    setShowLongPressComponents(true);
   }
 
   function handleCopyHashtags() {
@@ -367,11 +358,7 @@ function ResultPhoto(props: ResultPhotoProps) {
         } ${determineDeviceAndPhotoDisplayOrientation()}`}
         src={props.capturedPhoto ?? ""}
         alt="captured"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleTouchStart}
-        onMouseUp={handleTouchEnd}
-        onMouseLeave={handleTouchEnd}
+        onContextMenu={handleContextMenu}
       />
       {showLongPressComponents && (
         <div className={styles.shareOptions}>
