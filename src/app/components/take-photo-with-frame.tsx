@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Key, useCallback, useEffect, useRef, useState } from "react";
+import React, { Key, useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
 import styles from "../styles/take-photo-with-frame.module.scss";
 import { MediaLongPressTooltip } from "./media-long-press-tooltip";
@@ -18,53 +18,12 @@ function Camera(props: CameraProps) {
   const frameRef = useRef<HTMLImageElement>(null);
   const [facingMode, setFacingMode] = useState("user");
   const [isLandscape, setIsLandscape] = useState(false);
-  const [frameDimensions, setFrameDimensions] = useState({
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-  });
   const [videoDimensions, setVideoDimensions] = useState({
     width: 0,
     height: 0,
   });
 
-  const  ios = false
-
-  const calculateFrameDimensions = useCallback(() => {
-    const frame = frameRef.current;
-    const container = frame?.parentElement;
-
-    if (!frame || !container) return;
-
-    const containerRect = container.getBoundingClientRect();
-
-    // Get the natural aspect ratio of the frame image
-    const frameAspectRatio = frame.naturalWidth / frame.naturalHeight;
-    const containerAspectRatio = containerRect.width / containerRect.height;
-
-    let frameWidth, frameHeight;
-
-    // Calculate actual rendered dimensions based on object-fit: contain
-    if (frameAspectRatio > containerAspectRatio) {
-      // Frame is wider relative to container - will fit to width
-      frameWidth = containerRect.width;
-      frameHeight = containerRect.width / frameAspectRatio;
-    } else {
-      // Frame is taller relative to container - will fit to height
-      frameHeight = containerRect.height;
-      frameWidth = containerRect.height * frameAspectRatio;
-    }
-
-    const top =
-      ((containerRect.height - frameHeight) / 2 / containerRect.height) * 100;
-    const bottom = top;
-    const left =
-      ((containerRect.width - frameWidth) / 2 / containerRect.width) * 100;
-    const right = left;
-
-    setFrameDimensions({ top, bottom, left, right });
-  }, []);
+  const ios = false;
 
   const calculateVideoSize = useCallback(() => {
     const frame = frameRef.current;
@@ -90,13 +49,8 @@ function Camera(props: CameraProps) {
       videoWidth = containerRect.height * videoAspectRatio;
     }
 
-    // Set state to store video size
     setVideoDimensions({ width: videoWidth, height: videoHeight });
   }, []);
-
-  const handleFrameLoad = useCallback(() => {
-    calculateFrameDimensions();
-  }, [calculateFrameDimensions]);
 
   function capturePhoto() {
     const video = videoRef.current;
@@ -175,12 +129,6 @@ function Camera(props: CameraProps) {
 
     stopCamera();
 
-    // const frameOverlay = frameRef.current;
-    // if (!frameOverlay) return;
-
-    // const frameRect = frameOverlay.getBoundingClientRect();
-    // const frameAspectRatio = frameRect.width / frameRect.height;
-
     const constraints = {
       video: {
         audio: false,
@@ -202,9 +150,8 @@ function Camera(props: CameraProps) {
       cameraActive.current = false;
     }
 
-    calculateFrameDimensions();
     calculateVideoSize();
-  }, [calculateFrameDimensions, calculateVideoSize, facingMode, isLandscape]);
+  }, [calculateVideoSize, facingMode, isLandscape]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -264,27 +211,10 @@ function Camera(props: CameraProps) {
           }
           alt="Frame overlay"
           className={styles.frameOverlay}
-          onLoad={handleFrameLoad}
           style={{
             height: videoDimensions.height,
             width: videoDimensions.width,
           }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayTop}`}
-          style={{ height: `${frameDimensions.top}%` }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayBottom}`}
-          style={{ height: `${frameDimensions.bottom}%` }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayLeft}`}
-          style={{ width: `${frameDimensions.left}%` }}
-        />
-        <div
-          className={`${styles.overlayMask} ${styles.overlayRight}`}
-          style={{ width: `${frameDimensions.right}%` }}
         />
       </div>
       <div className={`${styles.controls} ${ios ? styles.iosMargin : ""}`}>
@@ -320,7 +250,15 @@ function ResultPhoto(props: ResultPhotoProps) {
   const longPressTimerRef = useRef<any>(null);
   const hashtagsRef = useRef<HTMLDivElement | null>(null);
 
-  function handleTouchStart() {
+  const isSafari = /^((?!chrome|android|crios).)*safari/i.test(
+    navigator.userAgent
+  );
+
+  function handleTouchStart(e: React.TouchEvent | React.MouseEvent) {
+    if (isSafari) {
+      e.preventDefault();
+    }
+
     longPressTimerRef.current = setTimeout(() => {
       setShowTooltip(false);
       setShowLongPressComponents(true);
@@ -430,13 +368,7 @@ function ResultPhoto(props: ResultPhotoProps) {
           }}
         />
       </div>
-      {showTooltip && (
-        <MediaLongPressTooltip
-          show={true}
-          onLongPressStart={handleTouchStart}
-          onLongPressEnd={handleTouchEnd}
-        />
-      )}
+      {showTooltip && <MediaLongPressTooltip show={true} />}
       <img
         className={`${
           styles.resultPhoto
