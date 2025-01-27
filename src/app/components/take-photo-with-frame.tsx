@@ -17,13 +17,21 @@ function Camera(props: CameraProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLImageElement>(null);
   const [facingMode, setFacingMode] = useState("user");
-  const [isLandscape, setIsLandscape] = useState(false);
+  const [deviceOrientation, setDeviceOrientation] =
+    useState<keyof typeof orientationDirectionStyle>("portraitPrimary");
   const [videoDimensions, setVideoDimensions] = useState({
     width: 0,
     height: 0,
   });
 
-  const ios = false;
+  const isLandscape = deviceOrientation.includes("landscape");
+
+  const orientationDirectionStyle = {
+    portraitPrimary: "",
+    portraitSecondary: "",
+    landscapePrimary: styles.landscapePrimary,
+    landscapeSecondary: styles.landscapeSecondary,
+  };
 
   const calculateVideoSize = useCallback(() => {
     const frame = frameRef.current;
@@ -109,7 +117,22 @@ function Camera(props: CameraProps) {
   }
 
   const updateOrientation = useCallback(() => {
-    setIsLandscape(window.innerWidth > window.innerHeight);
+    const orientation = screen.orientation.type;
+
+    switch (orientation) {
+      case "landscape-primary":
+        setDeviceOrientation("landscapePrimary");
+        break;
+      case "landscape-secondary":
+        setDeviceOrientation("landscapeSecondary");
+        break;
+      case "portrait-primary":
+        setDeviceOrientation("portraitPrimary");
+        break;
+      case "portrait-secondary":
+        setDeviceOrientation("portraitSecondary");
+        break;
+    }
   }, []);
 
   function closeTakePhotoWithFrame() {
@@ -193,7 +216,10 @@ function Camera(props: CameraProps) {
   }, [updateOrientation, startCamera]);
 
   return (
-    <div className={styles.takePhotoWithFrameContainer} ref={elNodeRef}>
+    <div
+      className={`${styles.takePhotoWithFrameContainer} ${orientationDirectionStyle[deviceOrientation]}`}
+      ref={elNodeRef}
+    >
       <div className={styles.cameraWrapper}>
         <video
           ref={videoRef}
@@ -217,7 +243,7 @@ function Camera(props: CameraProps) {
           }}
         />
       </div>
-      <div className={`${styles.controls} ${ios ? styles.iosMargin : ""}`}>
+      <div className={styles.controls}>
         <div
           onClick={closeTakePhotoWithFrame}
           className={`${styles.controlButton} ${styles.close}`}
@@ -247,11 +273,27 @@ function ResultPhoto(props: ResultPhotoProps) {
   const [showLongPressComponents, setShowLongPressComponents] = useState(false);
   const [photoOrientation, setPhotoOrientation] = useState<string | null>(null);
   const [isLandscape, setIsLandscape] = useState(false);
+  const longPressTimerRef = useRef<any>(null);
   const hashtagsRef = useRef<HTMLDivElement | null>(null);
 
-  function handleContextMenu() {
-    setShowTooltip(false);
-    setShowLongPressComponents(true);
+  const isSafari = /^((?!chrome|android|crios).)*safari/i.test(
+    navigator.userAgent
+  );
+
+  function handleTouchStart() {
+    longPressTimerRef.current = setTimeout(
+      () => {
+        setShowTooltip(false);
+        setShowLongPressComponents(true);
+      },
+      isSafari ? 1250 : 1000
+    );
+  }
+
+  function handleTouchEnd() {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+    }
   }
 
   function handleCopyHashtags() {
@@ -358,7 +400,11 @@ function ResultPhoto(props: ResultPhotoProps) {
         } ${determineDeviceAndPhotoDisplayOrientation()}`}
         src={props.capturedPhoto ?? ""}
         alt="captured"
-        onContextMenu={handleContextMenu}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onMouseDown={handleTouchStart}
+        onMouseUp={handleTouchEnd}
+        onMouseLeave={handleTouchEnd}
       />
       {showLongPressComponents && (
         <div className={styles.shareOptions}>
