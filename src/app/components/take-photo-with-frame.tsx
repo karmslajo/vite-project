@@ -17,14 +17,13 @@ function Camera(props: CameraProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLImageElement>(null);
   const [facingMode, setFacingMode] = useState("user");
+  const [isLandscape, setIsLandscape] = useState(false);
   const [deviceOrientation, setDeviceOrientation] =
     useState<keyof typeof orientationDirectionStyle>("portraitPrimary");
   const [videoDimensions, setVideoDimensions] = useState({
     width: 0,
     height: 0,
   });
-
-  const isLandscape = deviceOrientation.includes("landscape");
 
   const orientationDirectionStyle = {
     portraitPrimary: "",
@@ -118,6 +117,8 @@ function Camera(props: CameraProps) {
 
   const updateOrientation = useCallback(() => {
     const orientation = screen.orientation.type;
+
+    setIsLandscape(orientation.includes("landscape"));
 
     switch (orientation) {
       case "landscape-primary":
@@ -276,18 +277,11 @@ function ResultPhoto(props: ResultPhotoProps) {
   const longPressTimerRef = useRef<any>(null);
   const hashtagsRef = useRef<HTMLDivElement | null>(null);
 
-  const isSafari = /^((?!chrome|android|crios).)*safari/i.test(
-    navigator.userAgent
-  );
-
   function handleTouchStart() {
-    longPressTimerRef.current = setTimeout(
-      () => {
-        setShowTooltip(false);
-        setShowLongPressComponents(true);
-      },
-      isSafari ? 1250 : 1000
-    );
+    longPressTimerRef.current = setTimeout(() => {
+      setShowTooltip(false);
+      setShowLongPressComponents(true);
+    }, 1250);
   }
 
   function handleTouchEnd() {
