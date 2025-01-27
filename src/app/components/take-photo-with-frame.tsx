@@ -250,19 +250,11 @@ function ResultPhoto(props: ResultPhotoProps) {
   const longPressTimerRef = useRef<any>(null);
   const hashtagsRef = useRef<HTMLDivElement | null>(null);
 
-  const isSafari = /^((?!chrome|android|crios).)*safari/i.test(
-    navigator.userAgent
-  );
-
-  function handleTouchStart(e: React.TouchEvent | React.MouseEvent) {
-    if (isSafari) {
-      e.preventDefault();
-    }
-
+  function handleTouchStart() {
     longPressTimerRef.current = setTimeout(() => {
       setShowTooltip(false);
       setShowLongPressComponents(true);
-    }, 750);
+    }, 1000);
   }
 
   function handleTouchEnd() {
