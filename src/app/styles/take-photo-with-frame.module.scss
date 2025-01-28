@@ -354,28 +354,38 @@
     margin-top: auto;
 
     &.portraitInLandscapeView {
-      width: 30%;
-      height: auto;
+      width: auto;
+      height: 45%;
     }
 
     &.landscapeInPortraitView {
-      width: 80%;
+      width: 90%;
       height: auto;
     }
 
     &.landscapeInLandscapeView {
-      width: 50%;
-      height: auto;
+      width: auto;
+      height: 45%;
     }
 
     &.portraitInPortraitView {
-      width: 75%;
+      width: 70%;
       height: auto;
     }
 
-    &.portraitLargePreview {
+    &.portraitInPortraitLargePreview {
       width: 90%;
       height: auto;
+    }
+
+    &.landscapeInLandscapeLargePreview {
+      width: auto;
+      height: 90%;
+    }
+
+    &.portraitInLandscapeLargePreview {
+      width: auto;
+      height: 90%;
     }
   }
 
@@ -383,18 +393,9 @@
     @include common.flex-layout(center, center, flex, row);
     border-radius: 50px;
     gap: 15px;
-    width: 70%;
-    max-width: 275px;
+    padding: 10px 0;
+    width: 230px;
     background-color: #1a1a1a;
-
-    @include media.mobile {
-      padding: 10px 0;
-      max-width: 265px;
-    }
-
-    @include media.desktop-or-tablet {
-      padding: 15px 0;
-    }
 
     @media (prefers-color-scheme: light) {
       background-color: #fafafa;
@@ -404,37 +405,33 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      width: 7vw;
-      height: 7vw;
-      max-width: 25px;
-      max-height: 25px;
+      width: 20px;
+      height: 20px;
       opacity: 0.4;
     }
 
     .shareInstagram {
       @extend .shareIcon;
-      background-image: url(/static/images/instagram-icon-bnw.svg);
+      background-image: url(/static/images/instagram-icon-bw.svg);
     }
 
     .shareFacebook {
       @extend .shareIcon;
-      background-image: url(/static/images/facebook-icon-bnw.svg);
+      background-image: url(/static/images/facebook-icon-bw.svg);
     }
 
     .shareLinkedin {
       @extend .shareIcon;
-      background-image: url(/static/images/linkedin-icon-bnw.svg);
+      background-image: url(/static/images/linkedin-icon-bw.svg);
     }
 
     .shareIconWhite {
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      width: 5vw;
-      height: 5vw;
-      max-width: 30px;
-      max-height: 30px;
-      background-image: url(share-white-2.svg);
+      width: 21px;
+      height: 21px;
+      background-image: url(/static/images/share-white-2.svg);
     }
 
     .shareButton {
@@ -444,16 +441,15 @@
       pointer-events: all;
       background-color: #ff9632;
       border-radius: 50px;
-      width: 25vw;
-      height: 10vw;
-      max-width: 110px;
-      max-height: 50px;
+      width: 90px;
+      height: 33px;
       padding-right: 5px;
       transition: transform 0.3s ease;
       color: white;
 
       .text {
         font-weight: bold;
+        font-size: 14px;
 
         &::first-letter {
           text-transform: uppercase;
@@ -469,7 +465,6 @@
     @include common.flex-layout(flex-start);
     width: 75%;
     max-width: 325px;
-
     gap: 7px;
 
     @media (orientation: landscape) {
@@ -510,12 +505,10 @@
       }
 
       .copyIcon {
-        width: 6vw;
-        height: 6vw;
-        max-width: 40px;
-        max-height: 40px;
+        width: 24px;
+        height: 24px;
         background: center / contain no-repeat;
-        background-image: url(copy-icon-orange.webp);
+        background-image: url(/static/images/copy-icon-orange.webp);
         cursor: pointer;
 
         &:hover {

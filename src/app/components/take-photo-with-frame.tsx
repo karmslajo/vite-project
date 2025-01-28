@@ -354,7 +354,23 @@ function ResultPhoto(props: ResultPhotoProps) {
       photoOrientation === "portrait" &&
       !showLongPressComponents
     ) {
-      return styles.portraitLargePreview;
+      return styles.portraitInPortraitLargePreview;
+    }
+
+    if (
+      isLandscape &&
+      photoOrientation === "landscape" &&
+      !showLongPressComponents
+    ) {
+      return styles.landscapeInLandscapeLargePreview;
+    }
+
+    if (
+      isLandscape &&
+      photoOrientation === "portrait" &&
+      !showLongPressComponents
+    ) {
+      return styles.portraitInLandscapeLargePreview;
     }
 
     if (!isLandscape && photoOrientation === "portrait") {
@@ -428,7 +444,6 @@ function ResultPhoto(props: ResultPhotoProps) {
       />
       {showLongPressComponents && props.frame.hashtags && (
         <div className={styles.hashtagContainer}>
-          <div className={styles.hashtagLabel}>copy hashtags and share</div>
           <div className={styles.hashtagsInner}>
             <div className={styles.hashtags} ref={hashtagsRef}>
               {props.frame!.hashtags?.map((hashtag: Key | null | undefined) => (
