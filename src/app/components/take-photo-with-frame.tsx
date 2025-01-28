@@ -197,8 +197,8 @@ function Camera(props: CameraProps) {
       cameraActive.current = false;
     }
 
-    updateOrientation();
     calculateVideoSize();
+    updateOrientation();
   }, [calculateVideoSize, facingMode, isLandscape]);
 
   function stopCamera() {
