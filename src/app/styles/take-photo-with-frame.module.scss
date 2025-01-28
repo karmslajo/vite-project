@@ -134,12 +134,10 @@
   background-color: black;
 
   &.landscapePrimary {
-    // Controls on the right side of device
     flex-direction: row;
   }
 
   &.landscapeSecondary {
-    // Controls on the left side of device
     flex-direction: row-reverse;
   }
 
