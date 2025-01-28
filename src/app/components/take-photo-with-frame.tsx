@@ -116,48 +116,67 @@ function Camera(props: CameraProps) {
   }
 
   const updateOrientation = useCallback(() => {
-    if (screen.orientation) {
-      const orientation = screen.orientation.type;
+    // if (screen.orientation) {
+    //   const orientation = screen.orientation.type;
 
-      setIsLandscape(orientation.includes("landscape"));
+    //   setIsLandscape(orientation.includes("landscape"));
 
-      switch (orientation) {
-        case "landscape-primary":
-          setDeviceOrientation("landscapePrimary");
-          break;
-        case "landscape-secondary":
-          setDeviceOrientation("landscapeSecondary");
-          break;
-        case "portrait-primary":
-          setDeviceOrientation("portraitPrimary");
-          break;
-        case "portrait-secondary":
-          setDeviceOrientation("portraitSecondary");
-          break;
-        default:
-          setDeviceOrientation("portraitPrimary");
-      }
-    } else if (window.screen.orientation.angle !== undefined) {
-      const orientation = window.screen.orientation.angle;
-      setIsLandscape(Math.abs(orientation) === 90);
-      switch (orientation) {
-        case 0:
-          setDeviceOrientation("portraitPrimary");
-          break;
-        case 90:
-          setDeviceOrientation("landscapePrimary");
-          break;
-        case 180:
-          setDeviceOrientation("portraitSecondary");
-          break;
-        case 270:
-          setDeviceOrientation("landscapeSecondary");
-          break;
-        default:
-          setDeviceOrientation("portraitPrimary");
-      }
-    } else {
-      console.warn("Orientation API is not supported in this browser.");
+    //   switch (orientation) {
+    //     case "landscape-primary":
+    //       setDeviceOrientation("landscapePrimary");
+    //       break;
+    //     case "landscape-secondary":
+    //       setDeviceOrientation("landscapeSecondary");
+    //       break;
+    //     case "portrait-primary":
+    //       setDeviceOrientation("portraitPrimary");
+    //       break;
+    //     case "portrait-secondary":
+    //       setDeviceOrientation("portraitSecondary");
+    //       break;
+    //     default:
+    //       setDeviceOrientation("portraitPrimary");
+    //   }
+    // } else if (window.screen.orientation.angle !== undefined) {
+    //   const orientation = window.screen.orientation.angle;
+    //   setIsLandscape(Math.abs(orientation) === 90);
+    //   switch (orientation) {
+    //     case 0:
+    //       setDeviceOrientation("portraitPrimary");
+    //       break;
+    //     case 90:
+    //       setDeviceOrientation("landscapePrimary");
+    //       break;
+    //     case 180:
+    //       setDeviceOrientation("portraitSecondary");
+    //       break;
+    //     case 270:
+    //       setDeviceOrientation("landscapeSecondary");
+    //       break;
+    //     default:
+    //       setDeviceOrientation("portraitPrimary");
+    //   }
+    // } else {
+    //   console.warn("Orientation API is not supported in this browser.");
+    // }
+
+    const orientation = window.screen.orientation.angle;
+    setIsLandscape(Math.abs(orientation) === 90);
+    switch (orientation) {
+      case 0:
+        setDeviceOrientation("portraitPrimary");
+        break;
+      case 90:
+        setDeviceOrientation("landscapePrimary");
+        break;
+      case 180:
+        setDeviceOrientation("portraitSecondary");
+        break;
+      case 270:
+        setDeviceOrientation("landscapeSecondary");
+        break;
+      default:
+        setDeviceOrientation("portraitPrimary");
     }
   }, []);
 
