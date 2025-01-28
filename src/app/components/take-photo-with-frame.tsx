@@ -239,19 +239,11 @@ function Camera(props: CameraProps) {
     };
   }, [updateOrientation, startCamera]);
 
+  console.log(orientationDirectionStyle[deviceOrientation]);
   return (
-    <div
-      className={`${styles.takePhotoWithFrameContainer} ${orientationDirectionStyle[deviceOrientation]}`}
-      ref={elNodeRef}
-    >
+    <div className={`${styles.takePhotoWithFrameContainer}`} ref={elNodeRef}>
       <div className={styles.cameraWrapper}>
-        <video
-          ref={videoRef}
-          playsInline={true}
-          className={`${styles.cameraFeed} ${
-            facingMode === "user" ? styles.reverse : ""
-          }`}
-        />
+        <p>{deviceOrientation}</p>
         <img
           ref={frameRef}
           src={
@@ -457,7 +449,7 @@ function ResultPhoto(props: ResultPhotoProps) {
           </div>
         </div>
       )}
-      <div className={styles.footer}></div>
+      <div className={styles.footer} />
     </div>
   );
 }

@@ -132,14 +132,19 @@
   height: 100vh;
   width: 100vw;
   background-color: black;
+  color: white;
 
-  &.landscapePrimary {
+  @media (orientation: landscape) {
     flex-direction: row;
   }
 
-  &.landscapeSecondary {
-    flex-direction: row-reverse;
-  }
+  // &.landscapePrimary {
+  //   flex-direction: row;
+  // }
+
+  // &.landscapeSecondary {
+  //   flex-direction: row-reverse;
+  // }
 
   .cameraWrapper {
     position: relative;
