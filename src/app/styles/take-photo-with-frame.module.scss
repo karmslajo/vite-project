@@ -364,7 +364,12 @@
     }
 
     &.portraitInPortraitView {
-      width: 80%;
+      width: 75%;
+      height: auto;
+    }
+
+    &.portraitLargePreview {
+      width: 90%;
       height: auto;
     }
   }
