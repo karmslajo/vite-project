@@ -115,7 +115,7 @@ function Camera(props: CameraProps) {
     stopCamera();
   }
 
-  const updateOrientation = useCallback(() => {
+  function updateOrientation() {
     const orientation = screen.orientation.type;
 
     setIsLandscape(orientation.includes("landscape"));
@@ -157,7 +157,7 @@ function Camera(props: CameraProps) {
     //   default:
     //     setDeviceOrientation("portraitPrimary");
     // }
-  }, []);
+  }
 
   function closeTakePhotoWithFrame() {
     props.setCapturedPhoto(null);
@@ -197,6 +197,7 @@ function Camera(props: CameraProps) {
       cameraActive.current = false;
     }
 
+    updateOrientation();
     calculateVideoSize();
   }, [calculateVideoSize, facingMode, isLandscape]);
 
@@ -215,14 +216,6 @@ function Camera(props: CameraProps) {
   }, [startCamera]);
 
   useEffect(() => {
-    updateOrientation();
-
-    function handleResize() {
-      updateOrientation();
-      // Handles resizing the video feed to fit the frame depending on orientation
-      startCamera();
-    }
-
     function handleVisibilityChange() {
       if (document.hidden) {
         stopCamera();
@@ -231,19 +224,27 @@ function Camera(props: CameraProps) {
       }
     }
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", startCamera);
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", startCamera);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [updateOrientation, startCamera]);
+  }, [startCamera]);
 
-  console.log(orientationDirectionStyle[deviceOrientation]);
   return (
-    <div className={`${styles.takePhotoWithFrameContainer}`} ref={elNodeRef}>
+    <div
+      className={`${styles.takePhotoWithFrameContainer} ${orientationDirectionStyle[deviceOrientation]}`}
+      ref={elNodeRef}
+    >
       <div className={styles.cameraWrapper}>
-        <p>{deviceOrientation}</p>
+        <video
+          ref={videoRef}
+          playsInline={true}
+          className={`${styles.cameraFeed} ${
+            facingMode === "user" ? styles.reverse : ""
+          }`}
+        />
         <img
           ref={frameRef}
           src={
