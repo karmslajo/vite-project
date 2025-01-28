@@ -71,7 +71,7 @@ function Camera(props: CameraProps) {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    // Set canvas to frame's original resolution
+    // Set canvas to video's original resolution
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
@@ -384,7 +384,7 @@ function ResultPhoto(props: ResultPhotoProps) {
     }
 
     if (isLandscape && photoOrientation === "landscape") {
-      return styles.lanscapeInLandscapeView;
+      return styles.landscapeInLandscapeView;
     }
 
     if (isLandscape && photoOrientation === "portrait") {
@@ -392,8 +392,10 @@ function ResultPhoto(props: ResultPhotoProps) {
     }
 
     if (!isLandscape && photoOrientation === "landscape") {
-      return styles.lanscapeInPortraitView;
+      return styles.landscapeInPortraitView;
     }
+
+    return "";
   }
 
   const updateOrientation = useCallback(() => {
@@ -446,17 +448,6 @@ function ResultPhoto(props: ResultPhotoProps) {
         onMouseUp={handleTouchEnd}
         onMouseLeave={handleTouchEnd}
       />
-      {showLongPressComponents && (
-        <div className={styles.shareOptions}>
-          <div className={styles.shareLinkedin} />
-          <div className={styles.shareInstagram} />
-          <div className={styles.shareFacebook} />
-          <div className={styles.shareButton} onClick={shareImage}>
-            <div className={styles.shareIconWhite} />
-            <div className={styles.text}>share</div>
-          </div>
-        </div>
-      )}
       {showLongPressComponents && props.frame.hashtags && (
         <div className={styles.hashtagContainer}>
           <div className={styles.hashtagLabel}>copy hashtags and share</div>
@@ -467,6 +458,17 @@ function ResultPhoto(props: ResultPhotoProps) {
               ))}
             </div>
             <div className={styles.copyIcon} onClick={handleCopyHashtags} />
+          </div>
+        </div>
+      )}
+      {showLongPressComponents && (
+        <div className={styles.shareOptions}>
+          <div className={styles.shareLinkedin} />
+          <div className={styles.shareInstagram} />
+          <div className={styles.shareFacebook} />
+          <div className={styles.shareButton} onClick={shareImage}>
+            <div className={styles.shareIconWhite} />
+            <div className={styles.text}>share</div>
           </div>
         </div>
       )}

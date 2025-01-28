@@ -353,18 +353,18 @@
       height: auto;
     }
 
-    &.lanscapeInPortraitView {
+    &.landscapeInPortraitView {
       width: 80%;
       height: auto;
     }
 
-    &.lanscapeInLandscapeView {
+    &.landscapeInLandscapeView {
       width: 50%;
       height: auto;
     }
 
     &.portraitInPortraitView {
-      width: 55%;
+      width: 80%;
       height: auto;
     }
   }
@@ -374,11 +374,12 @@
     border-radius: 50px;
     gap: 15px;
     width: 70%;
-    max-width: 325px;
+    max-width: 275px;
     background-color: #1a1a1a;
 
     @include media.mobile {
       padding: 10px 0;
+      max-width: 265px;
     }
 
     @include media.desktop-or-tablet {
@@ -395,23 +396,24 @@
       background-position: center;
       width: 7vw;
       height: 7vw;
-      max-width: 40px;
-      max-height: 40px;
+      max-width: 25px;
+      max-height: 25px;
+      opacity: 0.5;
     }
 
     .shareInstagram {
       @extend .shareIcon;
-      background-image: url(instagram-icon-colored.webp);
+      background-image: url(/static/images/instagram-icon-bnw.svg);
     }
 
     .shareFacebook {
       @extend .shareIcon;
-      background-image: url(facebook-icon-blue.webp);
+      background-image: url(/static/images/facebook-icon-bnw.svg);
     }
 
     .shareLinkedin {
       @extend .shareIcon;
-      background-image: url(linkedin-icon-blue.webp);
+      background-image: url(/static/images/linkedin-icon-bnw.svg);
     }
 
     .shareIconWhite {
