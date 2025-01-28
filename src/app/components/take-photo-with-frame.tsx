@@ -161,7 +161,9 @@ function Camera(props: CameraProps) {
     // }
 
     const orientation = window.screen.orientation.angle;
-    setIsLandscape(Math.abs(orientation) === 90);
+    setIsLandscape(
+      Math.abs(orientation) === 90 || Math.abs(orientation) === 270
+    );
     switch (orientation) {
       case 0:
         setDeviceOrientation("portraitPrimary");
