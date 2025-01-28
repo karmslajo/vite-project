@@ -354,7 +354,7 @@
     margin-top: auto;
 
     &.portraitInLandscapeView {
-      width: 30%;
+      width: 50%;
       height: auto;
     }
 
@@ -364,7 +364,7 @@
     }
 
     &.landscapeInLandscapeView {
-      width: 50%;
+      width: 70%;
       height: auto;
     }
 
@@ -468,7 +468,13 @@
   .hashtagContainer {
     @include common.flex-layout(flex-start);
     width: 75%;
+    max-width: 325px;
+
     gap: 7px;
+
+    @media (orientation: landscape) {
+      margin: 10px 0;
+    }
 
     .hashtagLabel {
       color: white;
