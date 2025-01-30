@@ -365,6 +365,14 @@ function ResultPhoto(props: ResultPhotoProps) {
       return styles.landscapeInLandscapeLargePreview;
     }
 
+    if (
+      isLandscape &&
+      photoOrientation === "portrait" &&
+      !showLongPressComponents
+    ) {
+      return styles.portraitInLandscapeLargePreview;
+    }
+
     if (!isLandscape && photoOrientation === "portrait") {
       return styles.portraitInPortraitView;
     }
