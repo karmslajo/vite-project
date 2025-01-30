@@ -305,7 +305,7 @@
 }
 
 .resultPhotoContainer {
-  @include common.flex-layout(flex-start);
+  @include common.flex-layout();
   background-color: black;
   gap: 3%;
   overflow: auto;
@@ -315,6 +315,10 @@
 
   @media (prefers-color-scheme: light) {
     background-color: white;
+  }
+
+  @media (orientation: landscape) {
+    @include common.flex-layout(center, center, flex, row);
   }
 
   .header {
@@ -344,175 +348,200 @@
       cursor: pointer;
 
       @media (prefers-color-scheme: dark) {
-        background-image: url(Chevron-Left-white-2.svg);
+        background-image: url(Chevron-Left-white-2.webp);
       }
     }
   }
 
-  .resultPhoto {
-    object-fit: contain;
-    margin-top: auto;
-
-    &.portraitInLandscapeView {
-      width: auto;
-      height: 45%;
-    }
-
-    &.landscapeInPortraitView {
-      width: 90%;
-      height: auto;
-    }
-
-    &.landscapeInLandscapeView {
-      width: auto;
-      height: 45%;
-    }
-
-    &.portraitInPortraitView {
-      width: 70%;
-      height: auto;
-    }
-
-    &.portraitInPortraitLargePreview {
-      width: 90%;
-      height: auto;
-    }
-
-    &.landscapeInLandscapeLargePreview {
-      width: auto;
-      height: 90%;
-    }
-
-    &.portraitInLandscapeLargePreview {
-      width: auto;
-      height: 90%;
-    }
-  }
-
-  .shareOptions {
-    @include common.flex-layout(center, center, flex, row);
-    border-radius: 50px;
-    gap: 15px;
-    padding: 10px 0;
-    width: 230px;
-    background-color: #1a1a1a;
-
-    @media (prefers-color-scheme: light) {
-      background-color: #fafafa;
-    }
-
-    .shareIcon {
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      width: 20px;
-      height: 20px;
-      opacity: 0.4;
-    }
-
-    .shareInstagram {
-      @extend .shareIcon;
-      background-image: url(/static/images/instagram-icon-bw.svg);
-    }
-
-    .shareFacebook {
-      @extend .shareIcon;
-      background-image: url(/static/images/facebook-icon-bw.svg);
-    }
-
-    .shareLinkedin {
-      @extend .shareIcon;
-      background-image: url(/static/images/linkedin-icon-bw.svg);
-    }
-
-    .shareIconWhite {
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      width: 21px;
-      height: 21px;
-      background-image: url(/static/images/share-white-2.svg);
-    }
-
-    .shareButton {
-      @include common.flex-layout(center, center, flex, row);
-      cursor: pointer;
-      gap: 5px;
-      pointer-events: all;
-      background-color: #ff9632;
-      border-radius: 50px;
-      width: 90px;
-      height: 33px;
-      padding-right: 5px;
-      transition: transform 0.3s ease;
-      color: white;
-
-      .text {
-        font-weight: bold;
-        font-size: 14px;
-
-        &::first-letter {
-          text-transform: uppercase;
-        }
-      }
-      &:hover {
-        transform: scale(0.9);
-      }
-    }
-  }
-
-  .hashtagContainer {
-    @include common.flex-layout(flex-start);
-    width: 75%;
-    max-width: 325px;
-    gap: 7px;
+  .resultPhotoWrapper {
+    @include common.flex-layout();
+    width: 100%;
 
     @media (orientation: landscape) {
-      margin: 10px 0;
+      height: 100%;
     }
 
-    .hashtagLabel {
-      color: white;
-      font-size: 16px;
-      width: 100%;
-      margin-left: -30px;
-      font-weight: bold;
+    &.landscapeWithLongPressComponents {
+      width: 50%;
+    }
+
+    .resultPhoto {
+      object-fit: contain;
+
+      &.portraitInLandscapeView {
+        width: auto;
+        height: 90%;
+      }
+
+      &.landscapeInLandscapeView {
+        width: 90%;
+        height: auto;
+      }
+
+      &.landscapeInPortraitView {
+        width: 90%;
+        height: auto;
+      }
+
+      &.portraitInPortraitView {
+        width: 70%;
+        height: auto;
+      }
+
+      &.portraitInPortraitLargePreview {
+        width: 90%;
+        height: auto;
+      }
+
+      &.landscapeInLandscapeLargePreview {
+        width: 70%;
+        height: auto;
+      }
+
+      &.portraitInLandscapeLargePreview {
+        width: 50%;
+        height: auto;
+      }
+    }
+  }
+
+  .longPressComponentsWrapper {
+    @include common.flex-layout();
+    width: 100%;
+    gap: 15px;
+
+    @media (orientation: landscape) {
+      width: 50%;
+      height: 100%;
+    }
+
+    .shareOptions {
+      @include common.flex-layout(center, center, flex, row);
+      border-radius: 50px;
+      gap: 15px;
+      padding: 10px 0;
+      width: 230px;
+      background-color: #1a1a1a;
 
       @media (prefers-color-scheme: light) {
-        color: black;
+        background-color: #fafafa;
+      }
+
+      .shareIcon {
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 20px;
+        height: 20px;
+        opacity: 0.4;
+      }
+
+      .shareInstagram {
+        @extend .shareIcon;
+        background-image: url(instagram-icon-bw.svg);
+      }
+
+      .shareFacebook {
+        @extend .shareIcon;
+        background-image: url(facebook-icon-bw.svg);
+      }
+
+      .shareLinkedin {
+        @extend .shareIcon;
+        background-image: url(linkedin-icon-bw.svg);
+      }
+
+      .shareIconWhite {
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 21px;
+        height: 21px;
+        background-image: url(share-white-2.svg);
+      }
+
+      .shareButton {
+        @include common.flex-layout(center, center, flex, row);
+        cursor: pointer;
+        gap: 5px;
+        pointer-events: all;
+        background-color: #ff9632;
+        border-radius: 50px;
+        width: 90px;
+        height: 33px;
+        padding-right: 5px;
+        transition: transform 0.3s ease;
+        color: white;
+
+        .text {
+          font-weight: bold;
+          font-size: 14px;
+
+          &::first-letter {
+            text-transform: uppercase;
+          }
+        }
+        &:hover {
+          transform: scale(0.9);
+        }
       }
     }
 
-    .hashtagsInner {
-      @include common.flex-layout(space-between, center, flex, row);
-      border: 2px solid #b7b7b7;
-      border-radius: 50px;
+    .hashtagContainer {
+      @include common.flex-layout(flex-start);
+      width: 75%;
+      max-width: 325px;
       gap: 7px;
-      padding: 4px 8px 4px 16px;
-      width: 100%;
 
-      .hashtags {
+      @include media.mobile {
+        @media (orientation: landscape) {
+          width: 85%;
+        }
+      }
+
+      .hashtagLabel {
         color: white;
-        cursor: pointer;
-        width: 90%;
-        overflow-x: auto;
-        white-space: nowrap;
         font-size: 16px;
+        width: 100%;
+        margin-left: -30px;
+        font-weight: bold;
 
         @media (prefers-color-scheme: light) {
           color: black;
         }
       }
 
-      .copyIcon {
-        width: 24px;
-        height: 24px;
-        background: center / contain no-repeat;
-        background-image: url(/static/images/copy-icon-orange.webp);
-        cursor: pointer;
+      .hashtagsInner {
+        @include common.flex-layout(space-between, center, flex, row);
+        border: 2px solid #b7b7b7;
+        border-radius: 50px;
+        gap: 7px;
+        padding: 4px 8px 4px 16px;
+        width: 100%;
 
-        &:hover {
-          transform: scale(0.9);
+        .hashtags {
+          color: white;
+          cursor: pointer;
+          width: 90%;
+          overflow-x: auto;
+          white-space: nowrap;
+          font-size: 16px;
+
+          @media (prefers-color-scheme: light) {
+            color: black;
+          }
+        }
+
+        .copyIcon {
+          width: 24px;
+          height: 24px;
+          background: center / contain no-repeat;
+          background-image: url(copy-icon-orange.webp);
+          cursor: pointer;
+
+          &:hover {
+            transform: scale(0.9);
+          }
         }
       }
     }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { Key, useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
 import styles from "../styles/take-photo-with-frame.module.scss";
 import { MediaLongPressTooltip } from "./media-long-press-tooltip";
@@ -430,42 +430,45 @@ function ResultPhoto(props: ResultPhotoProps) {
         />
       </div>
       {showTooltip && <MediaLongPressTooltip show={true} />}
-      <img
-        className={`${
-          styles.resultPhoto
-        } ${determineDeviceAndPhotoDisplayOrientation()}`}
-        src={props.capturedPhoto ?? ""}
-        alt="captured"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleTouchStart}
-        onMouseUp={handleTouchEnd}
-        onMouseLeave={handleTouchEnd}
-      />
-      {showLongPressComponents && props.frame.hashtags && (
-        <div className={styles.hashtagContainer}>
-          <div className={styles.hashtagsInner}>
-            <div className={styles.hashtags} ref={hashtagsRef}>
-              {props.frame!.hashtags?.map((hashtag: Key | null | undefined) => (
-                <span key={hashtag}>{`${hashtag} `}</span>
-              ))}
-            </div>
-            <div className={styles.copyIcon} onClick={handleCopyHashtags} />
-          </div>
-        </div>
-      )}
+      <div
+        className={`${styles.resultPhotoWrapper} ${
+          isLandscape && showLongPressComponents
+            ? styles.landscapeWithLongPressComponents
+            : ""
+        }`}
+      >
+        <img
+          className={`${
+            styles.resultPhoto
+          } ${determineDeviceAndPhotoDisplayOrientation()}`}
+          src={props.capturedPhoto ?? ""}
+          alt="captured"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleTouchStart}
+          onMouseUp={handleTouchEnd}
+          onMouseLeave={handleTouchEnd}
+        />
+      </div>
       {showLongPressComponents && (
-        <div className={styles.shareOptions}>
-          <div className={styles.shareLinkedin} />
-          <div className={styles.shareInstagram} />
-          <div className={styles.shareFacebook} />
-          <div className={styles.shareButton} onClick={shareImage}>
-            <div className={styles.shareIconWhite} />
-            <div className={styles.text}>share</div>
+        <div className={styles.longPressComponentsWrapper}>
+          <div className={styles.hashtagContainer}>
+            <div className={styles.hashtagsInner}>
+              <div className={styles.hashtags} ref={hashtagsRef}></div>
+              <div className={styles.copyIcon} onClick={handleCopyHashtags} />
+            </div>
+          </div>
+          <div className={styles.shareOptions}>
+            <div className={styles.shareLinkedin} />
+            <div className={styles.shareInstagram} />
+            <div className={styles.shareFacebook} />
+            <div className={styles.shareButton} onClick={shareImage}>
+              <div className={styles.shareIconWhite} />
+              <div className={styles.text}>Share</div>
+            </div>
           </div>
         </div>
       )}
-      <div className={styles.footer} />
     </div>
   );
 }
