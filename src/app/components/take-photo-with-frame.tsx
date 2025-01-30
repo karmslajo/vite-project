@@ -421,9 +421,15 @@ function ResultPhoto(props: ResultPhotoProps) {
 
   return (
     <div className={styles.resultPhotoContainer}>
-      <div className={styles.header}>
+      <div
+        className={`${styles.header} ${
+          showLongPressComponents ? styles.longPressHeader : ""
+        }`}
+      >
         <div
-          className={styles.backIcon}
+          className={`${styles.backIcon} ${
+            showLongPressComponents ? styles.longPressBackIcon : ""
+          }`}
           onClick={() => {
             props.setCapturedPhoto(null);
           }}
