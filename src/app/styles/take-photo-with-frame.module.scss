@@ -343,12 +343,12 @@
       width: 20px;
       height: 20px;
       background: center / contain no-repeat;
-      background-image: url(Chevron-Left-black-2.webp);
+      background-image: url(Chevron-Left-black-2.svg);
       margin: 20px 20px;
       cursor: pointer;
 
       @media (prefers-color-scheme: dark) {
-        background-image: url(Chevron-Left-white-2.webp);
+        background-image: url(Chevron-Left-white-2.svg);
       }
     }
   }
