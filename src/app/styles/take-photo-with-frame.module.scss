@@ -549,6 +549,20 @@
     }
   }
 
+  .bottomNotification {
+    position: absolute;
+    width: 100%;
+    padding: 10px 0;
+    bottom: 0;
+    left: 0;
+    background-color: #ff9632;
+    color: #ffffff;
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 16px;
+    line-height: 26px;
+  }
+
   .footer {
     @include common.flex-layout(flex-end, center, flex, row);
     width: 100%;

@@ -290,6 +290,7 @@ function ResultPhoto(props: ResultPhotoProps) {
   const [showLongPressComponents, setShowLongPressComponents] = useState(false);
   const [photoOrientation, setPhotoOrientation] = useState<string | null>(null);
   const [isLandscape, setIsLandscape] = useState(false);
+  const [copied, setCopied] = useState(false);
   const longPressTimerRef = useRef<any>(null);
   const hashtagsRef = useRef<HTMLDivElement | null>(null);
 
@@ -313,7 +314,10 @@ function ResultPhoto(props: ResultPhotoProps) {
       navigator.clipboard
         .writeText(hashtags)
         .then(() => {
-          alert("Hashtags Copied!");
+          setCopied(true);
+          setTimeout(() => {
+            setCopied(false);
+          }, 3000);
         })
         .catch((err) => {
           console.error("Failed to copy hashtags: ", err);
@@ -474,6 +478,9 @@ function ResultPhoto(props: ResultPhotoProps) {
             </div>
           </div>
         </div>
+      )}
+      {copied && (
+        <div className={styles.bottomNotification}>Hashtags Copied</div>
       )}
     </div>
   );
