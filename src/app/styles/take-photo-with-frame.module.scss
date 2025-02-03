@@ -306,6 +306,7 @@
 
 .resultPhotoContainer {
   @include common.flex-layout();
+  position: relative;
   background-color: black;
   gap: 3%;
   overflow: auto;
