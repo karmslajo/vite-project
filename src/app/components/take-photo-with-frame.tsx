@@ -464,7 +464,9 @@ function ResultPhoto(props: ResultPhotoProps) {
         <div className={styles.longPressComponentsWrapper}>
           <div className={styles.hashtagContainer}>
             <div className={styles.hashtagsInner}>
-              <div className={styles.hashtags} ref={hashtagsRef}></div>
+              <div className={styles.hashtags} ref={hashtagsRef}>
+                #Yay
+              </div>
               <div className={styles.copyIcon} onClick={handleCopyHashtags} />
             </div>
           </div>
