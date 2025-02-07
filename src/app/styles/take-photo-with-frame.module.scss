@@ -153,11 +153,16 @@
     justify-content: center;
     align-items: center;
     background: black;
+    flex-shrink: 0;
+    max-width: 100%;
+    max-height: 100%;
 
     .cameraFeed {
       object-fit: contain;
       width: 100%;
       height: 100%;
+      max-width: 100%;
+      max-height: 100%;
       z-index: 1;
     }
 
