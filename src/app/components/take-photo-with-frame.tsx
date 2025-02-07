@@ -175,6 +175,7 @@ function Camera(props: CameraProps) {
     cameraActive.current = true;
 
     stopCamera();
+    updateOrientation();
 
     const constraints = {
       video: {
@@ -204,7 +205,6 @@ function Camera(props: CameraProps) {
     }
 
     calculateVideoSize();
-    updateOrientation();
   }, [calculateVideoSize, facingMode, isLandscape]);
 
   function stopCamera() {
