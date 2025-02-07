@@ -181,7 +181,7 @@ function Camera(props: CameraProps) {
       video: {
         audio: false,
         facingMode: facingMode,
-        aspectRatio: 9 / 16,
+        aspectRatio: isLandscape ? 16 / 9 : 9 / 16,
       },
     };
 
@@ -198,7 +198,7 @@ function Camera(props: CameraProps) {
     }
 
     calculateVideoSize();
-  }, [calculateVideoSize, facingMode]);
+  }, [calculateVideoSize, facingMode, isLandscape]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
