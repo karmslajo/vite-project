@@ -175,13 +175,14 @@ function Camera(props: CameraProps) {
     cameraActive.current = true;
 
     stopCamera();
-    updateOrientation();
 
     const constraints = {
       video: {
         audio: false,
         facingMode: facingMode,
-        aspectRatio: isLandscape ? 4 / 3 : 3 / 4,
+        aspectRatio: isLandscape ? 16 / 9 : 9 / 16,
+        width: { ideal: isLandscape ? 7680 : 4320 },
+        height: { ideal: isLandscape ? 4320 : 7680 },
       },
     };
 
@@ -196,9 +197,7 @@ function Camera(props: CameraProps) {
     } finally {
       cameraActive.current = false;
     }
-
-    calculateVideoSize();
-  }, [calculateVideoSize, facingMode, isLandscape]);
+  }, [facingMode, isLandscape]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -223,13 +222,19 @@ function Camera(props: CameraProps) {
       }
     }
 
-    window.addEventListener("resize", startCamera);
+    function handleResize() {
+      updateOrientation();
+      startCamera();
+      calculateVideoSize();
+    }
+
+    window.addEventListener("resize", handleResize);
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
-      window.removeEventListener("resize", startCamera);
+      window.removeEventListener("resize", handleResize);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [startCamera]);
+  }, [calculateVideoSize, startCamera]);
 
   return (
     <div
