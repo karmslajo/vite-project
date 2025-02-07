@@ -180,8 +180,14 @@ function Camera(props: CameraProps) {
       video: {
         audio: false,
         facingMode: facingMode,
-        width: { ideal: isLandscape ? 7680 : 4320 },
-        height: { ideal: isLandscape ? 4320 : 7680 },
+        width: {
+          ideal: isLandscape ? 7680 : 4320,
+          max: isLandscape ? 7680 : 4320,
+        },
+        height: {
+          ideal: isLandscape ? 4320 : 7680,
+          max: isLandscape ? 4320 : 7680,
+        },
       },
     };
 
