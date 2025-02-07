@@ -198,6 +198,7 @@ function Camera(props: CameraProps) {
     }
 
     calculateVideoSize();
+    updateOrientation();
   }, [calculateVideoSize, facingMode, isLandscape]);
 
   function stopCamera() {
@@ -222,11 +223,10 @@ function Camera(props: CameraProps) {
         startCamera();
       }
     }
-    window.addEventListener("resize", updateOrientation);
+
     window.addEventListener("resize", startCamera);
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
-      window.addEventListener("resize", updateOrientation);
       window.removeEventListener("resize", startCamera);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
