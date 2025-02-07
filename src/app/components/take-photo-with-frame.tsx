@@ -181,7 +181,7 @@ function Camera(props: CameraProps) {
       video: {
         audio: false,
         facingMode: facingMode,
-        aspectRatio: 16 / 9,
+        aspectRatio: 9 / 16,
         width: { ideal: isLandscape ? 7680 : 4320 },
         height: { ideal: isLandscape ? 4320 : 7680 },
       },
