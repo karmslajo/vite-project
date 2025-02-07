@@ -208,10 +208,12 @@ function Camera(props: CameraProps) {
 
   useEffect(() => {
     startCamera();
+    updateOrientation();
+    calculateVideoSize();
     return () => {
       stopCamera();
     };
-  }, [startCamera]);
+  }, [calculateVideoSize, startCamera]);
 
   useEffect(() => {
     function handleVisibilityChange() {
