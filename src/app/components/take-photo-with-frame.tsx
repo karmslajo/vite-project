@@ -24,6 +24,7 @@ function Camera(props: CameraProps) {
     width: 0,
     height: 0,
   });
+  const [test, setTest] = useState("");
 
   const orientationDirectionStyle = {
     portraitPrimary: "",
@@ -190,7 +191,22 @@ function Camera(props: CameraProps) {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+        await videoRef.current.play().then(() => {
+          setTest(
+            `|| ${stream.active} || ${stream.id} || ${stream
+              .getVideoTracks()
+              .map(
+                (track) =>
+                  `>${track.label} >${track.readyState} >${track.id} >${
+                    track.getSettings().facingMode
+                  } >${track.getSettings().width} >${
+                    track.getSettings().height
+                  } >${track.getSettings().aspectRatio} >${
+                    track.getSettings().frameRate
+                  } >${track.enabled}`
+              )} ||`
+          );
+        });
       }
     } catch (error) {
       console.error("Error accessing the camera:", error);
@@ -260,6 +276,15 @@ function Camera(props: CameraProps) {
             width: videoDimensions.width,
           }}
         />
+      </div>
+      <div
+        style={{
+          color: "white",
+          position: "absolute",
+          textAlign: "left",
+        }}
+      >
+        {test}
       </div>
       <div className={styles.controls}>
         <div
