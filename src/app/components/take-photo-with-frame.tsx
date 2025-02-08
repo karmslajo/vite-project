@@ -270,6 +270,7 @@ function Camera(props: CameraProps) {
 
   useEffect(() => {
     startCamera();
+    updateOrientation();
     return () => {
       stopCamera();
     };
