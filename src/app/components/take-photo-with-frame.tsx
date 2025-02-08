@@ -275,12 +275,11 @@ function Camera(props: CameraProps) {
   }
 
   useEffect(() => {
-    updateOrientation();
     startCamera();
     return () => {
       stopCamera();
     };
-  }, [startCamera, updateOrientation]);
+  }, [startCamera]);
 
   useEffect(() => {
     function handleVisibilityChange() {
