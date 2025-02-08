@@ -24,6 +24,7 @@ function Camera(props: CameraProps) {
     width: 0,
     height: 0,
   });
+  const [videoInputs, setVideoInputs] = useState<MediaDeviceInfo[]>([]);
 
   const orientationDirectionStyle = {
     portraitPrimary: "",
@@ -186,6 +187,13 @@ function Camera(props: CameraProps) {
       },
     };
 
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoInputs = devices.filter(
+      (device) => device.kind === "videoinput"
+    );
+
+    setVideoInputs(videoInputs);
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       if (videoRef.current) {
@@ -239,7 +247,15 @@ function Camera(props: CameraProps) {
       ref={elNodeRef}
     >
       <div className={styles.cameraWrapper}>
-        <video
+        <div>
+          {videoInputs.map((input) => (
+            <>
+              <div key={input.deviceId}>{input.label}</div>
+              <div>{`Width: ${videoDimensions.width}, Height: ${videoDimensions.height}`}</div>
+            </>
+          ))}
+        </div>
+        {/* <video
           ref={videoRef}
           playsInline={true}
           className={`${styles.cameraFeed} ${
@@ -259,7 +275,7 @@ function Camera(props: CameraProps) {
             height: videoDimensions.height,
             width: videoDimensions.width,
           }}
-        />
+        /> */}
       </div>
       <div className={styles.controls}>
         <div
