@@ -208,6 +208,13 @@ function Camera(props: CameraProps) {
                   } >${track.getSettings().aspectRatio} >${
                     track.getSettings().frameRate
                   } >${track.enabled}`
+              )} || ${stream
+              .getVideoTracks()
+              .map(
+                (data) =>
+                  `${data.getCapabilities().height} ${
+                    data.getCapabilities().width
+                  }`
               )} ||`
           );
         });
