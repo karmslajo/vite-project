@@ -227,7 +227,6 @@ function Camera(props: CameraProps) {
     cameraActive.current = true;
 
     stopCamera();
-    updateOrientation();
 
     // const constraints = await getOptimalVideoConstraints();
     console.log(await getOptimalVideoConstraints());
@@ -239,8 +238,8 @@ function Camera(props: CameraProps) {
         // Other devices would overflow the container if aspect ratio is not set
         aspectRatio: { ideal: 4 / 3 },
         // Adjusted for 8K 4:3 resolution so the browser will pick the highest resolution available
-        width: { ideal: isLandscape ? 4096 : 3072 },
-        height: { ideal: isLandscape ? 3072 : 4096 },
+        width: { ideal: isLandscape ? 8192 : 6144 },
+        height: { ideal: isLandscape ? 6144 : 8192 },
       },
     };
 
@@ -259,6 +258,7 @@ function Camera(props: CameraProps) {
     }
 
     calculateVideoSize();
+    updateOrientation();
   }, [
     calculateVideoSize,
     facingMode,
