@@ -182,8 +182,8 @@ function Camera(props: CameraProps) {
         audio: false,
         facingMode: facingMode,
         aspectRatio: 4 / 3,
-        width: { ideal: isLandscape ? 8192 : 6144 },
-        height: { ideal: isLandscape ? 6144 : 8192 },
+        width: { ideal: isLandscape ? 4096 : 3072 },
+        height: { ideal: isLandscape ? 3072 : 4096 },
       },
     };
 
