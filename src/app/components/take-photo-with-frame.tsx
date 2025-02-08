@@ -173,6 +173,8 @@ function Camera(props: CameraProps) {
   }
 
   const getOptimalVideoConstraints = useCallback(async () => {
+    const maxWidthFixed = isLandscape ? 8192 : 6144;
+    const maxHeightFixed = isLandscape ? 6144 : 8192;
     const baseConstraints = {
       audio: false,
       facingMode,
@@ -190,8 +192,8 @@ function Camera(props: CameraProps) {
       if (!videoTrack) throw new Error("No video track found.");
 
       const capabilities = videoTrack.getCapabilities();
-      const maxWidth = capabilities.width?.max || 8192;
-      const maxHeight = capabilities.height?.max || 6144;
+      const maxWidth = capabilities.width?.max || maxWidthFixed;
+      const maxHeight = capabilities.height?.max || maxHeightFixed;
 
       setTest1(`Max Width: ${maxWidth}, Max Height: ${maxHeight}`);
 
@@ -213,8 +215,8 @@ function Camera(props: CameraProps) {
       return {
         video: {
           ...baseConstraints,
-          width: { ideal: isLandscape ? 8192 : 6144 },
-          height: { ideal: isLandscape ? 6144 : 8192 },
+          width: { ideal: maxWidthFixed },
+          height: { ideal: maxHeightFixed },
         },
       };
     }
