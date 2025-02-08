@@ -229,12 +229,25 @@ function Camera(props: CameraProps) {
     stopCamera();
     updateOrientation();
 
-    const contraints = await getOptimalVideoConstraints();
+    // const constraints = await getOptimalVideoConstraints();
+    console.log(await getOptimalVideoConstraints());
 
-    setTest(JSON.stringify(contraints));
+    const constraints = {
+      video: {
+        audio: false,
+        facingMode: facingMode,
+        // Other devices would overflow the container if aspect ratio is not set
+        aspectRatio: { ideal: 4 / 3 },
+        // Adjusted for 8K 4:3 resolution so the browser will pick the highest resolution available
+        width: { ideal: isLandscape ? 8192 : 6144 },
+        height: { ideal: isLandscape ? 6144 : 8192 },
+      },
+    };
+
+    setTest(JSON.stringify(constraints));
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia(contraints);
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
@@ -246,7 +259,7 @@ function Camera(props: CameraProps) {
     }
 
     calculateVideoSize();
-  }, [calculateVideoSize, getOptimalVideoConstraints]);
+  }, [calculateVideoSize, facingMode, getOptimalVideoConstraints, isLandscape]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
