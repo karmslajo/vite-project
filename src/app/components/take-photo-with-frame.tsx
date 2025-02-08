@@ -269,8 +269,8 @@ function Camera(props: CameraProps) {
   }
 
   useEffect(() => {
-    startCamera();
     updateOrientation();
+    startCamera();
     return () => {
       stopCamera();
     };
