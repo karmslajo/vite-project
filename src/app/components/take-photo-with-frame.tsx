@@ -24,6 +24,7 @@ function Camera(props: CameraProps) {
     width: 0,
     height: 0,
   });
+  const [test, setTest] = useState("");
 
   const orientationDirectionStyle = {
     portraitPrimary: "",
@@ -193,6 +194,7 @@ function Camera(props: CameraProps) {
         await videoRef.current.play();
       }
     } catch (error) {
+      setTest(String(error));
       console.error("Error accessing the camera:", error);
     } finally {
       cameraActive.current = false;
@@ -260,6 +262,15 @@ function Camera(props: CameraProps) {
             width: videoDimensions.width,
           }}
         />
+      </div>
+      <div
+        style={{
+          color: "white",
+          position: "absolute",
+          textAlign: "left",
+        }}
+      >
+        {test}
       </div>
       <div className={styles.controls}>
         <div

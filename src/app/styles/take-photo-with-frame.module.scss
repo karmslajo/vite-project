@@ -129,6 +129,7 @@
 .takePhotoWithFrameContainer {
   display: flex;
   flex-direction: column;
+  position: relative;
   height: 100vh;
   width: 100vw;
   background-color: black;
