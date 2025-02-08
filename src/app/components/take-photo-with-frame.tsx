@@ -16,7 +16,7 @@ function Camera(props: CameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLImageElement>(null);
-  const [facingMode, setFacingMode] = useState("user");
+  const [facingMode, setFacingMode] = useState("environment");
   const [isLandscape, setIsLandscape] = useState(false);
   const [deviceOrientation, setDeviceOrientation] =
     useState<keyof typeof orientationDirectionStyle>("portraitPrimary");
@@ -182,8 +182,6 @@ function Camera(props: CameraProps) {
         audio: false,
         facingMode: facingMode,
         aspectRatio: 4 / 3,
-        width: { ideal: isLandscape ? 4096 : 3072 },
-        height: { ideal: isLandscape ? 3072 : 4096 },
       },
     };
 
