@@ -25,6 +25,7 @@ function Camera(props: CameraProps) {
     height: 0,
   });
   const [test, setTest] = useState("");
+  const [test1, setTest1] = useState("");
 
   const orientationDirectionStyle = {
     portraitPrimary: "",
@@ -171,53 +172,69 @@ function Camera(props: CameraProps) {
     setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
   }
 
+  const getOptimalVideoConstraints = useCallback(async () => {
+    const baseConstraints = {
+      audio: false,
+      facingMode,
+      aspectRatio: { ideal: 4 / 3 },
+    };
+
+    try {
+      // Start camera with minimal constraints to get capabilities
+      const tempStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode },
+      });
+
+      const videoTrack = tempStream.getVideoTracks()[0];
+
+      if (!videoTrack) throw new Error("No video track found.");
+
+      const capabilities = videoTrack.getCapabilities();
+      const maxWidth = capabilities.width?.max || 8192;
+      const maxHeight = capabilities.height?.max || 6144;
+
+      setTest1(`Max Width: ${maxWidth}, Max Height: ${maxHeight}`);
+
+      tempStream.getTracks().forEach((track) => track.stop());
+
+      return {
+        video: {
+          ...baseConstraints,
+          width: {
+            ideal: isLandscape ? maxWidth : maxHeight,
+          },
+          height: {
+            ideal: isLandscape ? maxHeight : maxWidth,
+          },
+        },
+      };
+    } catch (error) {
+      console.error("Error getting camera capabilities:", error);
+      return {
+        video: {
+          ...baseConstraints,
+          width: { ideal: isLandscape ? 8192 : 6144 },
+          height: { ideal: isLandscape ? 6144 : 8192 },
+        },
+      };
+    }
+  }, [facingMode, isLandscape]);
+
   const startCamera = useCallback(async () => {
     if (cameraActive.current) return;
     cameraActive.current = true;
 
     stopCamera();
 
-    const constraints = {
-      video: {
-        audio: false,
-        facingMode: facingMode,
-        aspectRatio: { ideal: 4 / 3 },
-        width: {
-          ideal: isLandscape ? 4096 : 3072,
-        },
-        height: {
-          ideal: isLandscape ? 3072 : 4096,
-        },
-      },
-    };
+    const contraints = await getOptimalVideoConstraints();
+
+    setTest(JSON.stringify(contraints));
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      const stream = await navigator.mediaDevices.getUserMedia(contraints);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        await videoRef.current.play().then(() => {
-          setTest(
-            `|| ${stream.active} || ${stream.id} || ${stream
-              .getVideoTracks()
-              .map(
-                (track) =>
-                  `>${track.label} >${track.readyState} >${track.id} >${
-                    track.getSettings().facingMode
-                  } >${track.getSettings().width} >${
-                    track.getSettings().height
-                  } >${track.getSettings().aspectRatio} >${
-                    track.getSettings().frameRate
-                  } >${track.enabled}`
-              )} || ${stream
-              .getVideoTracks()
-              .map(
-                (data) =>
-                  `${data.getCapabilities().height} ${
-                    data.getCapabilities().width
-                  }`
-              )} ||`
-          );
-        });
+        await videoRef.current.play();
       }
     } catch (error) {
       console.error("Error accessing the camera:", error);
@@ -227,7 +244,7 @@ function Camera(props: CameraProps) {
 
     calculateVideoSize();
     updateOrientation();
-  }, [calculateVideoSize, facingMode, isLandscape]);
+  }, [calculateVideoSize, getOptimalVideoConstraints]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -296,6 +313,7 @@ function Camera(props: CameraProps) {
         }}
       >
         {test}
+        {`Max Constraints: ${test1}`}
       </div>
       <div className={styles.controls}>
         <div
