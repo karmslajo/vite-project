@@ -117,7 +117,7 @@ function Camera(props: CameraProps) {
     stopCamera();
   }
 
-  function updateOrientation() {
+  const updateOrientation = useCallback(() => {
     const orientation = screen.orientation.type;
 
     setIsLandscape(orientation.includes("landscape"));
@@ -159,7 +159,7 @@ function Camera(props: CameraProps) {
     //   default:
     //     setDeviceOrientation("portraitPrimary");
     // }
-  }
+  }, []);
 
   function closeTakePhotoWithFrame() {
     props.setCapturedPhoto(null);
@@ -259,7 +259,13 @@ function Camera(props: CameraProps) {
     }
 
     calculateVideoSize();
-  }, [calculateVideoSize, facingMode, getOptimalVideoConstraints, isLandscape]);
+  }, [
+    calculateVideoSize,
+    facingMode,
+    getOptimalVideoConstraints,
+    isLandscape,
+    updateOrientation,
+  ]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -274,7 +280,7 @@ function Camera(props: CameraProps) {
     return () => {
       stopCamera();
     };
-  }, [startCamera]);
+  }, [startCamera, updateOrientation]);
 
   useEffect(() => {
     function handleVisibilityChange() {
