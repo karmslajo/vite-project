@@ -176,10 +176,25 @@ function Camera(props: CameraProps) {
 
     stopCamera();
 
+    const videoDevices = await navigator.mediaDevices.enumerateDevices();
+    const cameras = videoDevices.filter(
+      (device) => device.kind === "videoinput"
+    );
+
+    const selectedCamera = cameras.find((device) => {
+      if (facingMode === "user") {
+        return device.label.toLowerCase().includes("front");
+      } else {
+        return device.label.toLowerCase().includes("back");
+      }
+    });
+
     const constraints = {
       video: {
         audio: false,
-        facingMode: facingMode,
+        deviceId: selectedCamera
+          ? { exact: selectedCamera.deviceId }
+          : undefined,
         aspectRatio: 4 / 3,
         width: { ideal: isLandscape ? 8192 : 6144 },
         height: { ideal: isLandscape ? 6144 : 8192 },
