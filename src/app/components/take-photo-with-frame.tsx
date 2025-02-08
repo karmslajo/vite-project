@@ -191,10 +191,12 @@ function Camera(props: CameraProps) {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+        await videoRef.current.play().then(() => {
+          setTest("Camera started");
+        });
       }
     } catch (error) {
-      setTest(String(error));
+      setTest(`Camera error: ${String(error)}`);
       console.error("Error accessing the camera:", error);
     } finally {
       cameraActive.current = false;
