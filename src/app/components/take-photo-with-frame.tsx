@@ -201,10 +201,10 @@ function Camera(props: CameraProps) {
         video: {
           ...baseConstraints,
           width: {
-            ideal: isLandscape ? maxWidth : maxHeight,
+            ideal: maxWidth,
           },
           height: {
-            ideal: isLandscape ? maxHeight : maxWidth,
+            ideal: maxHeight,
           },
         },
       };
