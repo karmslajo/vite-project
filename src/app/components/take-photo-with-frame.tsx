@@ -172,55 +172,62 @@ function Camera(props: CameraProps) {
     setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
   }
 
-  const getOptimalVideoConstraints = useCallback(async () => {
-    const maxWidthFixed = isLandscape ? 8192 : 6144;
-    const maxHeightFixed = isLandscape ? 6144 : 8192;
-    const baseConstraints = {
-      audio: false,
-      facingMode,
-      aspectRatio: { ideal: 4 / 3 },
-    };
-
-    try {
-      // Start camera with minimal constraints to get capabilities
-      const tempStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode },
-      });
-
-      const videoTrack = tempStream.getVideoTracks()[0];
-
-      if (!videoTrack) throw new Error("No video track found.");
-
-      const capabilities = videoTrack.getCapabilities();
-      const maxWidth = capabilities.width?.max || maxWidthFixed;
-      const maxHeight = capabilities.height?.max || maxHeightFixed;
-
-      setTest1(`Max Width: ${maxWidth}, Max Height: ${maxHeight}`);
-
-      tempStream.getTracks().forEach((track) => track.stop());
-
-      return {
-        video: {
-          ...baseConstraints,
-          width: {
-            ideal: maxWidth,
-          },
-          height: {
-            ideal: maxHeight,
-          },
-        },
+  const getOptimalVideoConstraints = useCallback(
+    async (facingMode: string) => {
+      const maxWidthFixed = isLandscape ? 8192 : 6144;
+      const maxHeightFixed = isLandscape ? 6144 : 8192;
+      const baseConstraints = {
+        audio: false,
+        facingMode,
+        aspectRatio: 4 / 3,
       };
-    } catch (error) {
-      console.error("Error getting camera capabilities:", error);
-      return {
-        video: {
-          ...baseConstraints,
-          width: { ideal: maxWidthFixed },
-          height: { ideal: maxHeightFixed },
-        },
-      };
-    }
-  }, [facingMode, isLandscape]);
+
+      try {
+        // Start camera with minimal constraints to get capabilities
+        const tempStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode },
+        });
+
+        const videoTrack = tempStream.getVideoTracks()[0];
+
+        if (!videoTrack) throw new Error("No video track found.");
+
+        const capabilities = videoTrack.getCapabilities();
+
+        const maxWidth = capabilities.width?.max || 8192;
+        const maxHeight = capabilities.height?.max || 6144;
+
+        const idealWidth = isLandscape ? maxWidth : maxHeight;
+        const idealHeight = isLandscape ? maxHeight : maxWidth;
+
+        setTest1(`Max Width: ${idealWidth}, Max Height: ${idealHeight}`);
+
+        tempStream.getTracks().forEach((track) => track.stop());
+
+        return {
+          video: {
+            ...baseConstraints,
+            width: {
+              ideal: idealWidth,
+            },
+            height: {
+              ideal: idealHeight,
+            },
+          },
+        };
+      } catch (error) {
+        console.error("Error getting camera capabilities:", error);
+        return {
+          video: {
+            ...baseConstraints,
+            width: { ideal: maxWidthFixed },
+            height: { ideal: maxHeightFixed },
+          },
+        };
+      }
+    },
+    [isLandscape]
+  );
 
   const startCamera = useCallback(async () => {
     if (cameraActive.current) return;
@@ -228,8 +235,8 @@ function Camera(props: CameraProps) {
 
     stopCamera();
 
-    // const constraints = await getOptimalVideoConstraints();
-    console.log(await getOptimalVideoConstraints());
+    // const constraints = await getOptimalVideoConstraints(facingMode);
+    console.log(await getOptimalVideoConstraints(facingMode));
 
     const constraints = {
       video: {
@@ -238,8 +245,8 @@ function Camera(props: CameraProps) {
         // Other devices would overflow the container if aspect ratio is not set
         aspectRatio: { ideal: 4 / 3 },
         // Adjusted for 8K 4:3 resolution so the browser will pick the highest resolution available
-        width: { ideal: isLandscape ? 8192 : 6144 },
-        height: { ideal: isLandscape ? 6144 : 8192 },
+        width: { ideal: isLandscape ? 4096 : 3072 },
+        height: { ideal: isLandscape ? 3072 : 4096 },
       },
     };
 
