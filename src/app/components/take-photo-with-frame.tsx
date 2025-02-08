@@ -225,6 +225,7 @@ function Camera(props: CameraProps) {
     cameraActive.current = true;
 
     stopCamera();
+    updateOrientation();
 
     const contraints = await getOptimalVideoConstraints();
 
@@ -243,7 +244,6 @@ function Camera(props: CameraProps) {
     }
 
     calculateVideoSize();
-    updateOrientation();
   }, [calculateVideoSize, getOptimalVideoConstraints]);
 
   function stopCamera() {
