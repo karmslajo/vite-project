@@ -230,10 +230,10 @@ function Camera(props: CameraProps) {
 
     stopCamera();
 
-    const deviceIos = navigator.userAgent.match(/(iPad|iPhone|iPod)/g);
+    // const deviceIos = navigator.userAgent.match(/(iPad|iPhone|iPod)/g);
 
-    const idealWidth = deviceIos ? 8192 : 5440;
-    const idealHeight = deviceIos ? 6144 : 4080;
+    // const idealWidth = deviceIos ? 8192 : 5440;
+    // const idealHeight = deviceIos ? 6144 : 4080;
 
     // const constraints = await getOptimalVideoConstraints();
     console.log(await getOptimalVideoConstraints());
@@ -245,8 +245,8 @@ function Camera(props: CameraProps) {
         // Other devices would overflow the container if aspect ratio is not set
         aspectRatio: { ideal: 4 / 3 },
         // Adjusted for 8K 4:3 resolution so the browser will pick the highest resolution available
-        width: { ideal: isLandscape ? idealWidth : idealHeight },
-        height: { ideal: isLandscape ? idealHeight : idealWidth },
+        width: { ideal: isLandscape ? 5440 : 4080 },
+        height: { ideal: isLandscape ? 4080 : 5440 },
       },
     };
 
