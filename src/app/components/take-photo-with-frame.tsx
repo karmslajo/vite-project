@@ -191,7 +191,8 @@ function Camera(props: CameraProps) {
 
       const capabilities = videoTrack.getCapabilities();
 
-      const maxWidth = Math.ceil((capabilities.height?.max || 6144) * 4) / 3;
+      // const maxWidth = Math.ceil((capabilities.height?.max || 6144) * 4) / 3;
+      const maxWidth = capabilities.width?.max || 8192;
       const maxHeight = capabilities.height?.max || 6144;
 
       const idealWidth = isLandscape ? maxWidth : maxHeight;
