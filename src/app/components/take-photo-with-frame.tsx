@@ -246,8 +246,8 @@ function Camera(props: CameraProps) {
         // Other devices would overflow the container if aspect ratio is not set
         aspectRatio: { ideal: 4 / 3 },
         // Adjusted for 8K 4:3 resolution so the browser will pick the highest resolution available
-        width: { max: 4096, ideal: isLandscape ? 5440 : 4080 },
-        height: { max: 4096, ideal: isLandscape ? 4080 : 5440 },
+        width: { max: 4096, ideal: isLandscape ? 4096 : 4096 },
+        height: { max: 4096, ideal: isLandscape ? 4096 : 4096 },
       },
     };
 
