@@ -192,8 +192,8 @@ function Camera(props: CameraProps) {
       const capabilities = videoTrack.getCapabilities();
 
       // const maxWidth = Math.ceil((capabilities.height?.max || 6144) * 4) / 3;
-      const maxWidth = capabilities.width?.max || 8192;
-      const maxHeight = capabilities.height?.max || 6144;
+      const maxWidth = capabilities.width?.max || 5440;
+      const maxHeight = capabilities.height?.max || 4080;
 
       const idealWidth = isLandscape ? maxWidth : maxHeight;
       const idealHeight = isLandscape ? maxHeight : maxWidth;
@@ -231,10 +231,10 @@ function Camera(props: CameraProps) {
 
     stopCamera();
 
-    const deviceIos = navigator.userAgent.match(/(iPad|iPhone|iPod)/g);
+    // const deviceIos = navigator.userAgent.match(/(iPad|iPhone|iPod)/g);
 
-    const idealWidth = deviceIos ? 7680 : 5440;
-    const idealHeight = deviceIos ? 5760 : 4080;
+    // const idealWidth = deviceIos ? 7680 : 5440;
+    // const idealHeight = deviceIos ? 5760 : 4080;
 
     // const constraints = await getOptimalVideoConstraints();
     console.log(await getOptimalVideoConstraints());
@@ -246,8 +246,8 @@ function Camera(props: CameraProps) {
         // Other devices would overflow the container if aspect ratio is not set
         aspectRatio: { ideal: 4 / 3 },
         // Adjusted for 8K 4:3 resolution so the browser will pick the highest resolution available
-        width: { max: 4096, ideal: isLandscape ? idealWidth : idealHeight },
-        height: { max: 4096, ideal: isLandscape ? idealHeight : idealWidth },
+        width: { max: 4096, ideal: isLandscape ? 5440 : 4080 },
+        height: { max: 4096, ideal: isLandscape ? 4080 : 5440 },
       },
     };
 
