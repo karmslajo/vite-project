@@ -244,7 +244,9 @@ function Camera(props: CameraProps) {
         audio: false,
         facingMode: facingMode,
         // Other devices would overflow the container if aspect ratio is not set
-        aspectRatio: { ideal: 4 / 3 },
+        // 1 (Square), 4:3 (Default), 6:3 (Rectangular, needs work since it pushes the controls off screen)
+        // 1, 1.1, 1.7
+        aspectRatio: { ideal: 6 / 3 },
         // Adjusted for 4K 4:3 resolution so the browser will pick the highest resolution available
         width: { max: 4096, ideal: 4096 },
         height: { max: 4096, ideal: 4096 },
