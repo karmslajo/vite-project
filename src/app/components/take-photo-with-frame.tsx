@@ -138,27 +138,6 @@ function Camera(props: CameraProps) {
       default:
         setDeviceOrientation("portraitPrimary");
     }
-
-    // const orientation = window.screen.orientation.angle;
-    // setIsLandscape(
-    //   Math.abs(orientation) === 90 || Math.abs(orientation) === 270
-    // );
-    // switch (orientation) {
-    //   case 0:
-    //     setDeviceOrientation("portraitPrimary");
-    //     break;
-    //   case 90:
-    //     setDeviceOrientation("landscapePrimary");
-    //     break;
-    //   case 180:
-    //     setDeviceOrientation("portraitSecondary");
-    //     break;
-    //   case 270:
-    //     setDeviceOrientation("landscapeSecondary");
-    //     break;
-    //   default:
-    //     setDeviceOrientation("portraitPrimary");
-    // }
   }, []);
 
   function closeTakePhotoWithFrame() {
@@ -237,7 +216,6 @@ function Camera(props: CameraProps) {
     // const idealHeight = deviceIos ? 5760 : 4080;
 
     // const constraints = await getOptimalVideoConstraints();
-    console.log(await getOptimalVideoConstraints());
 
     const constraints = {
       video: {
@@ -245,7 +223,7 @@ function Camera(props: CameraProps) {
         facingMode: facingMode,
         // Other devices would overflow the container if aspect ratio is not set
         // 1 (Square), 4:3 (Default), 16:9 (Rectangular, needs work since it pushes the controls off screen)
-        aspectRatio: { ideal: 16 / 9 },
+        aspectRatio: { ideal: 4 / 3 },
         // Adjusted for 4K resolution so the browser will pick the highest resolution available
         width: { max: 4096, ideal: 4096 },
         height: { max: 4096, ideal: 4096 },
@@ -267,13 +245,7 @@ function Camera(props: CameraProps) {
     }
 
     calculateVideoSize();
-    updateOrientation();
-  }, [
-    calculateVideoSize,
-    facingMode,
-    getOptimalVideoConstraints,
-    updateOrientation,
-  ]);
+  }, [calculateVideoSize, facingMode]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -298,13 +270,20 @@ function Camera(props: CameraProps) {
       }
     }
 
-    window.addEventListener("resize", startCamera);
+    function handleResize() {
+      updateOrientation();
+      startCamera();
+    }
+
+    window.addEventListener("resize", handleResize);
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
-      window.removeEventListener("resize", startCamera);
+      window.removeEventListener("resize", handleResize);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [startCamera]);
+  }, [startCamera, updateOrientation]);
+
+  console.log(getOptimalVideoConstraints());
 
   return (
     <div
@@ -342,7 +321,8 @@ function Camera(props: CameraProps) {
         }}
       >
         {test}
-        {`Max Constraints: ${test1}`}
+        <br />
+        {`${test1}`}
       </div>
       <div className={styles.controls}>
         <div
