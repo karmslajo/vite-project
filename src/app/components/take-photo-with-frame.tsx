@@ -15,15 +15,10 @@ function Camera(props: CameraProps) {
   const elNodeRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const frameRef = useRef<HTMLImageElement>(null);
   const [facingMode, setFacingMode] = useState("user");
   const [isLandscape, setIsLandscape] = useState(false);
   const [deviceOrientation, setDeviceOrientation] =
     useState<keyof typeof orientationDirectionStyle>("portraitPrimary");
-  const [videoDimensions, setVideoDimensions] = useState({
-    width: 0,
-    height: 0,
-  });
   const [test, setTest] = useState("");
   const [test1, setTest1] = useState("");
 
@@ -34,86 +29,10 @@ function Camera(props: CameraProps) {
     landscapeSecondary: styles.landscapeSecondary,
   };
 
-  const calculateVideoSize = useCallback(() => {
-    const frame = frameRef.current;
-    const video = videoRef.current;
-    const container = video?.parentElement;
-
-    if (!frame || !container || !video) return;
-
-    const containerRect = container.getBoundingClientRect();
-
-    // Get aspect ratios
-    const containerAspectRatio = containerRect.width / containerRect.height;
-    const videoAspectRatio = video.videoWidth / video.videoHeight;
-
-    let videoWidth, videoHeight;
-
-    // Calculate video's actual displayed size (matching object-fit: contain)
-    if (videoAspectRatio > containerAspectRatio) {
-      videoWidth = containerRect.width;
-      videoHeight = containerRect.width / videoAspectRatio;
-    } else {
-      videoHeight = containerRect.height;
-      videoWidth = containerRect.height * videoAspectRatio;
-    }
-
-    setVideoDimensions({ width: videoWidth, height: videoHeight });
-  }, []);
-
   function capturePhoto() {
-    const video = videoRef.current;
     const canvas = canvasRef.current;
-    const frameOverlay = frameRef.current;
-
-    if (!canvas || !video || !frameOverlay) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-
-    // Set canvas to video's original resolution
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    // Flip the context horizontally for the video only
-    if (facingMode === "user") {
-      ctx.save(); // Save the current context state
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-    }
-
-    // Draw the cropped video centered on the canvas
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // Restore the original context to stop flipping for the frame
-    if (facingMode === "user") {
-      ctx.restore();
-    }
-
-    const frame = new Image();
-    frame.crossOrigin = "anonymous";
-    // For production
-    // frame.src = isLandscape
-    //   ? props.frame!.landscape!.url
-    //   : props.frame!.portrait!.url;
-
-    // For dev only, do not use in production
-    frame.src = isLandscape
-      ? `https://api.allorigins.win/raw?url=${props.frame!.landscape!.url}`
-      : `https://api.allorigins.win/raw?url=${props.frame!.portrait!.url}`;
-
-    frame.onload = () => {
-      ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL("image/jpeg");
-      props.setCapturedPhoto(imageData);
-    };
-
-    frame.onerror = (err) => {
-      console.error("Error loading frame:", err);
-    };
-
+    if (!canvas) return;
+    props.setCapturedPhoto(canvas.toDataURL("image/jpeg"));
     stopCamera();
   }
 
@@ -138,27 +57,6 @@ function Camera(props: CameraProps) {
       default:
         setDeviceOrientation("portraitPrimary");
     }
-
-    // const orientation = window.screen.orientation.angle;
-    // setIsLandscape(
-    //   Math.abs(orientation) === 90 || Math.abs(orientation) === 270
-    // );
-    // switch (orientation) {
-    //   case 0:
-    //     setDeviceOrientation("portraitPrimary");
-    //     break;
-    //   case 90:
-    //     setDeviceOrientation("landscapePrimary");
-    //     break;
-    //   case 180:
-    //     setDeviceOrientation("portraitSecondary");
-    //     break;
-    //   case 270:
-    //     setDeviceOrientation("landscapeSecondary");
-    //     break;
-    //   default:
-    //     setDeviceOrientation("portraitPrimary");
-    // }
   }, []);
 
   function closeTakePhotoWithFrame() {
@@ -245,7 +143,7 @@ function Camera(props: CameraProps) {
         facingMode: facingMode,
         // Other devices would overflow the container if aspect ratio is not set
         // 1 (Square), 4:3 (Default), 16:9 (Rectangular, needs work since it pushes the controls off screen)
-        aspectRatio: { ideal: 16 / 9 },
+        aspectRatio: { ideal: 4 / 3 },
         // Adjusted for 4K resolution so the browser will pick the highest resolution available
         width: { max: 4096, ideal: 4096 },
         height: { max: 4096, ideal: 4096 },
@@ -256,22 +154,66 @@ function Camera(props: CameraProps) {
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
+      const videoElement = document.createElement("video");
+      videoElement.srcObject = stream;
+      videoElement.play();
+
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      videoElement.onloadedmetadata = () => {
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+      };
+      console.log("HERE");
+
+      const frame = new Image();
+      frame.crossOrigin = "anonymous";
+      frame.src = isLandscape
+        ? `https://api.allorigins.win/raw?url=${props.frame!.landscape!.url}`
+        : `https://api.allorigins.win/raw?url=${props.frame!.portrait!.url}`;
+
+      frame.onload = () => {
+        const renderFrame = () => {
+          if (!canvasRef.current || !cameraActive.current) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          if (facingMode === "user") {
+            ctx.save();
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+          }
+
+          // Draw camera feed
+          ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+          if (facingMode === "user") {
+            ctx.restore();
+          }
+
+          // Draw frame overlay on top of the video
+          ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+
+          requestAnimationFrame(renderFrame);
+        };
+
+        renderFrame();
+      };
     } catch (error) {
       console.error("Error accessing the camera:", error);
     } finally {
       cameraActive.current = false;
     }
 
-    calculateVideoSize();
+    getOptimalVideoConstraints();
     updateOrientation();
   }, [
-    calculateVideoSize,
     facingMode,
     getOptimalVideoConstraints,
+    isLandscape,
+    props.frame,
     updateOrientation,
   ]);
 
@@ -298,10 +240,8 @@ function Camera(props: CameraProps) {
       }
     }
 
-    window.addEventListener("resize", startCamera);
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
-      window.removeEventListener("resize", startCamera);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [startCamera]);
@@ -312,27 +252,7 @@ function Camera(props: CameraProps) {
       ref={elNodeRef}
     >
       <div className={styles.cameraWrapper}>
-        <video
-          ref={videoRef}
-          playsInline={true}
-          className={`${styles.cameraFeed} ${
-            facingMode === "user" ? styles.reverse : ""
-          }`}
-        />
-        <img
-          ref={frameRef}
-          src={
-            isLandscape
-              ? props.frame!.landscape!.url
-              : props.frame!.portrait!.url
-          }
-          alt="Frame overlay"
-          className={styles.frameOverlay}
-          style={{
-            height: videoDimensions.height,
-            width: videoDimensions.width,
-          }}
-        />
+        <canvas ref={canvasRef} className={styles.cameraFeed} />
       </div>
       <div
         style={{
@@ -358,7 +278,6 @@ function Camera(props: CameraProps) {
           className={`${styles.controlButton} ${styles.switch}`}
         />
       </div>
-      <canvas ref={canvasRef} style={{ display: "none" }} />
     </div>
   );
 }
