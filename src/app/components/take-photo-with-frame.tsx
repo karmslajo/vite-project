@@ -135,7 +135,6 @@ function Camera(props: CameraProps) {
     // const idealHeight = deviceIos ? 5760 : 4080;
 
     // const constraints = await getOptimalVideoConstraints();
-    console.log(await getOptimalVideoConstraints());
 
     const constraints = {
       video: {
@@ -154,68 +153,66 @@ function Camera(props: CameraProps) {
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      const videoElement = document.createElement("video");
-      videoElement.srcObject = stream;
-      videoElement.play();
-
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      videoElement.onloadedmetadata = () => {
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-      };
-      console.log("HERE");
-
-      const frame = new Image();
-      frame.crossOrigin = "anonymous";
-      frame.src = isLandscape
-        ? `https://api.allorigins.win/raw?url=${props.frame!.landscape!.url}`
-        : `https://api.allorigins.win/raw?url=${props.frame!.portrait!.url}`;
-
-      frame.onload = () => {
-        const renderFrame = () => {
-          if (!canvasRef.current || !cameraActive.current) return;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-          if (facingMode === "user") {
-            ctx.save();
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
-          }
-
-          // Draw camera feed
-          ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-          if (facingMode === "user") {
-            ctx.restore();
-          }
-
-          // Draw frame overlay on top of the video
-          ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-
-          requestAnimationFrame(renderFrame);
-        };
-
-        renderFrame();
-      };
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
     } catch (error) {
       console.error("Error accessing the camera:", error);
     } finally {
       cameraActive.current = false;
     }
 
-    getOptimalVideoConstraints();
     updateOrientation();
-  }, [
-    facingMode,
-    getOptimalVideoConstraints,
-    isLandscape,
-    props.frame,
-    updateOrientation,
-  ]);
+  }, [facingMode, updateOrientation]);
+
+  const drawVideoOnCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    const video = videoRef.current;
+
+    if (!canvas || !video) return;
+
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+    if (!ctx) return;
+
+    const frame = new Image();
+    frame.crossOrigin = "anonymous";
+    // For production
+    // frame.src = isLandscape
+    //   ? props.frame!.landscape!.url
+    //   : props.frame!.portrait!.url;
+    // For dev only, do not use in production
+    frame.src = isLandscape
+      ? `https://api.allorigins.win/raw?url=${props.frame!.landscape!.url}`
+      : `https://api.allorigins.win/raw?url=${props.frame!.portrait!.url}`;
+
+    function step() {
+      if (!ctx || !video || !canvas) return;
+
+      canvas.width = frame.width;
+      canvas.height = frame.height;
+
+      // Flip the context horizontally for the video only
+      if (facingMode === "user") {
+        ctx.save(); // Save the current context state
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+      }
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      if (facingMode === "user") {
+        ctx.restore();
+      }
+
+      ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+
+      requestAnimationFrame(step);
+    }
+
+    step();
+  }, [facingMode, isLandscape, props.frame]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -223,6 +220,76 @@ function Camera(props: CameraProps) {
       stream.getTracks().forEach((track) => track.stop());
     }
   }
+
+  // useEffect(() => {
+  //   const offsetX = 0.5; // center
+  //   const offsetY = 0.5; // center
+
+  //   const imageWidth = props.frame.outlineImageWidth;
+  //   const imageHeight = props.frame.outlineImageHeight;
+  //   const outlineLeft = props.frame.outlineLeft * props.frame.frameWidth;
+  //   const outlineTop = props.frame.outlineTop * props.frame.frameHeight;
+  //   const outlineWidth = props.frame.outlineWidth * props.frame.frameWidth;
+  //   const outlineHeight = props.frame.outlineHeight * props.frame.frameHeight;
+  //   const scale = Math.min(
+  //     outlineWidth / imageWidth,
+  //     outlineHeight / imageHeight
+  //   );
+
+  //   let cropLeft = 1;
+  //   let cropTop = 1;
+  //   let cropWidth = 1;
+  //   let cropHeight = 1;
+  //   let cropScale = 1;
+  //   let scaledWidth = imageWidth * scale;
+  //   let scaledHeight = imageHeight * scale;
+
+  //   // decide which gap to fill
+  //   if (scaledWidth < outlineWidth) cropScale = outlineWidth / scaledWidth;
+  //   if (Math.abs(cropScale - 1) < 1e-14 && scaledHeight < outlineHeight) {
+  //     cropScale = outlineHeight / scaledHeight;
+  //   }
+
+  //   scaledWidth *= cropScale;
+  //   scaledHeight *= cropScale;
+
+  //   // calc source rectangle
+  //   cropWidth = imageWidth / (scaledWidth / outlineWidth);
+  //   cropHeight = imageHeight / (scaledHeight / outlineHeight);
+
+  //   cropLeft = (imageWidth - cropWidth) * offsetX;
+  //   cropTop = (imageHeight - cropHeight) * offsetY;
+
+  //   // make sure source rectangle is valid
+  //   if (cropLeft < 0) cropLeft = 0;
+  //   if (cropTop < 0) cropTop = 0;
+  //   if (cropWidth > imageWidth) cropWidth = imageWidth;
+  //   if (cropHeight > imageHeight) cropHeight = imageHeight;
+
+  //   setOutlineImageProps({
+  //     x: props.frame.frameLeft + outlineLeft,
+  //     y: props.frame.frameTop + outlineTop,
+  //     width: outlineWidth,
+  //     height: outlineHeight,
+  //     crop: {
+  //       x: cropLeft,
+  //       y: cropTop,
+  //       width: cropWidth,
+  //       height: cropHeight,
+  //     },
+  //   });
+  // }, [
+  //   props.frame.frameHeight,
+  //   props.frame.frameLeft,
+  //   props.frame.frameTop,
+  //   props.frame.frameWidth,
+  //   props.frame.outlineHeight,
+  //   props.frame.outlineImageHeight,
+  //   props.frame.outlineImageWidth,
+  //   props.frame.outlineLeft,
+  //   props.frame.outlineTop,
+  //   props.frame.outlineWidth,
+  // ]);
 
   useEffect(() => {
     startCamera();
@@ -240,11 +307,20 @@ function Camera(props: CameraProps) {
       }
     }
 
+    const videoElement = videoRef.current;
+
+    videoElement?.addEventListener("play", drawVideoOnCanvas);
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
+      videoElement?.removeEventListener("play", drawVideoOnCanvas);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [startCamera]);
+  }, [drawVideoOnCanvas, startCamera]);
+
+  // For testing only
+  useEffect(() => {
+    console.log(getOptimalVideoConstraints());
+  }, [getOptimalVideoConstraints]);
 
   return (
     <div
@@ -252,6 +328,7 @@ function Camera(props: CameraProps) {
       ref={elNodeRef}
     >
       <div className={styles.cameraWrapper}>
+        <video ref={videoRef} style={{ display: "none" }} />
         <canvas ref={canvasRef} className={styles.cameraFeed} />
       </div>
       <div
@@ -262,7 +339,8 @@ function Camera(props: CameraProps) {
         }}
       >
         {test}
-        {`Max Constraints: ${test1}`}
+        <br />
+        {test1}
       </div>
       <div className={styles.controls}>
         <div
