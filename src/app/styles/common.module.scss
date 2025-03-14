@@ -1,4 +1,5 @@
-@use "./media";
+@use "./media" as media;
+@use "./common" as common;
 
 .longPressToSaveTooltip {
   display: flex;
@@ -30,4 +31,55 @@
   width: 20px;
   height: 20px;
   margin-right: 5px;
+}
+
+@mixin text-styling($font-size, $font-weight, $color, $light-color) {
+  font-size: $font-size;
+  font-weight: $font-weight;
+  color: $color;
+
+  @media (prefers-color-scheme: light) {
+    color: $light-color;
+  }
+}
+
+.poweredByGumpContainer {
+  @include common.flex-layout(center, center, flex, row);
+  gap: 4px;
+  margin-top: 4px;
+  padding-top: 12px;
+
+  &.dark {
+    .poweredByText {
+      background-image: url("light-gump-gg.svg");
+      padding-right: 54px;
+      background-repeat: no-repeat;
+      background-position: right center;
+      background-size: 48px;
+      @include text-styling(10px, 500, white, black);
+    }
+
+    @media (prefers-color-scheme: light) {
+      .poweredByText {
+        background-image: url("/static/images/gump-gg.svg");
+      }
+    }
+  }
+
+  &.light {
+    .poweredByText {
+      background-image: url("gump-gg.svg");
+      padding-right: 54px;
+      background-repeat: no-repeat;
+      background-position: right center;
+      background-size: 48px;
+      @include text-styling(10px, 500, black, white);
+    }
+
+    @media (prefers-color-scheme: light) {
+      .poweredByText {
+        background-image: url("/static/images/light-gump-gg.svg");
+      }
+    }
+  }
 }

@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ModalOverlay } from "../components/modal-overlay";
 import styles from "../styles/take-photo-with-frame.module.scss";
 import { MediaLongPressTooltip } from "./media-long-press-tooltip";
+import { PoweredByGump } from "./powered-by-gump";
 
 type CameraProps = {
   frame: any;
@@ -523,6 +524,7 @@ function ResultPhoto(props: ResultPhotoProps) {
           onMouseUp={handleTouchEnd}
           onMouseLeave={handleTouchEnd}
         />
+        {isLandscape && <PoweredByGump lightModeDisplay="dark" />}
       </div>
       {showLongPressComponents && (
         <div className={styles.longPressComponentsWrapper}>
@@ -543,6 +545,11 @@ function ResultPhoto(props: ResultPhotoProps) {
               <div className={styles.text}>Share</div>
             </div>
           </div>
+        </div>
+      )}
+      {!isLandscape && (
+        <div style={{ position: "absolute", bottom: 0, marginBottom: "25px" }}>
+          <PoweredByGump lightModeDisplay="dark" />
         </div>
       )}
       {copied && (
