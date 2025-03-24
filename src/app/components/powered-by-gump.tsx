@@ -1,19 +1,34 @@
+import { cssClass } from "../helpers/css-class";
 import styles from "../styles/common.module.scss";
 
-type Display = "light" | "dark";
-
-type PoweredByGumpProps = {
-  lightModeDisplay: Display;
+export type PoweredByGumpProps = {
+  mode: "light" | "dark";
+  textPx: number;
+  graphicWidthPx: number;
+  gapPx: number;
 };
 
 export function PoweredByGump(props: PoweredByGumpProps) {
-  const className = `${styles.poweredByGumpContainer} ${
-    props.lightModeDisplay === "light" ? styles.light : styles.dark
-  }`;
-
   return (
-    <div className={className}>
-      <div className={styles.poweredByText}>Powered by</div>
+    <div
+      className={cssClass({
+        [styles.poweredByGumpContainer]: true,
+        [styles.light]: props.mode === "light",
+        [styles.dark]: props.mode === "dark",
+      })}
+      style={{ gap: `${props.gapPx}px` }}
+    >
+      <div className={styles.text} style={{ fontSize: `${props.textPx}px` }}>
+        Powered by
+      </div>
+      <div
+        className={styles.poweredBy}
+        style={{ width: `${props.graphicWidthPx}px` }}
+      />
+      <div
+        className={styles.text}
+        style={{ fontSize: `${props.textPx}px` }}
+      ></div>
     </div>
   );
 }

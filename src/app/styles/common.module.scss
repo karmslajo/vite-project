@@ -44,41 +44,50 @@
 }
 
 .poweredByGumpContainer {
-  @include common.flex-layout(center, center, flex, row);
-  gap: 4px;
-  margin-top: 4px;
-  padding-top: 12px;
+  @include common.flex-layout(flex-start, center, flex, row);
+
+  .poweredBy {
+    background: center / contain no-repeat;
+    aspect-ratio: 50/15;
+  }
+
+  .text {
+    font-weight: 500;
+    text-transform: none;
+  }
 
   &.dark {
-    .poweredByText {
+    .poweredBy {
       background-image: url("light-gump-gg.svg");
-      padding-right: 54px;
-      background-repeat: no-repeat;
-      background-position: right center;
-      background-size: 48px;
-      @include text-styling(10px, 500, white, black);
+
+      @media (prefers-color-scheme: light) {
+        background-image: url("gump-gg.svg");
+      }
     }
 
-    @media (prefers-color-scheme: light) {
-      .poweredByText {
-        background-image: url("/static/images/gump-gg.svg");
+    .text {
+      color: white;
+
+      @media (prefers-color-scheme: light) {
+        color: black;
       }
     }
   }
 
   &.light {
-    .poweredByText {
+    .poweredBy {
       background-image: url("gump-gg.svg");
-      padding-right: 54px;
-      background-repeat: no-repeat;
-      background-position: right center;
-      background-size: 48px;
-      @include text-styling(10px, 500, black, white);
+
+      @media (prefers-color-scheme: light) {
+        background-image: url("light-gump-gg.svg");
+      }
     }
 
-    @media (prefers-color-scheme: light) {
-      .poweredByText {
-        background-image: url("/static/images/light-gump-gg.svg");
+    .text {
+      color: black;
+
+      @media (prefers-color-scheme: light) {
+        color: white;
       }
     }
   }

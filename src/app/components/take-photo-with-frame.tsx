@@ -524,7 +524,14 @@ function ResultPhoto(props: ResultPhotoProps) {
           onMouseUp={handleTouchEnd}
           onMouseLeave={handleTouchEnd}
         />
-        {isLandscape && <PoweredByGump lightModeDisplay="dark" />}
+        {isLandscape && (
+          <PoweredByGump
+            mode="dark"
+            graphicWidthPx={50}
+            textPx={10}
+            gapPx={4}
+          />
+        )}
       </div>
       {showLongPressComponents && (
         <div className={styles.longPressComponentsWrapper}>
@@ -549,7 +556,12 @@ function ResultPhoto(props: ResultPhotoProps) {
       )}
       {!isLandscape && (
         <div style={{ position: "absolute", bottom: 0, marginBottom: "25px" }}>
-          <PoweredByGump lightModeDisplay="dark" />
+          <PoweredByGump
+            mode="dark"
+            graphicWidthPx={50}
+            textPx={10}
+            gapPx={4}
+          />
         </div>
       )}
       {copied && (

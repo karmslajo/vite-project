@@ -50,6 +50,7 @@
     @include common.flex-layout;
     color: white;
     margin-top: 30px;
+    margin-bottom: 15px;
     width: 100%;
 
     @media (prefers-color-scheme: light) {
@@ -356,6 +357,8 @@
   .resultPhotoWrapper {
     @include common.flex-layout();
     width: 100%;
+    position: relative;
+    gap: 15px;
 
     @media (orientation: landscape) {
       height: 100%;
