@@ -4,6 +4,7 @@ import { ModalOverlay } from "../components/modal-overlay";
 import styles from "../styles/take-photo-with-frame.module.scss";
 import { MediaLongPressTooltip } from "./media-long-press-tooltip";
 import { PoweredByGump } from "./powered-by-gump";
+import { cssClass } from "../helpers/css-class";
 
 type CameraProps = {
   frame: any;
@@ -27,6 +28,10 @@ function Camera(props: CameraProps) {
   });
   const [test, setTest] = useState("");
   const [test1, setTest1] = useState("");
+
+  // Set max to 4096 due to ios canvas limitation to 4096 as of making this
+  const MAX_CANVAS_DIMENSION = 4096;
+  const deviceIos = navigator.userAgent.match(/(iPad|iPhone|iPod)/g);
 
   const orientationDirectionStyle = {
     portraitPrimary: "",
@@ -211,8 +216,6 @@ function Camera(props: CameraProps) {
 
     stopCamera();
 
-    // const deviceIos = navigator.userAgent.match(/(iPad|iPhone|iPod)/g);
-
     // const idealWidth = deviceIos ? 7680 : 5440;
     // const idealHeight = deviceIos ? 5760 : 4080;
 
@@ -226,8 +229,8 @@ function Camera(props: CameraProps) {
         // 1 (Square), 4:3 (Default), 16:9 (Rectangular, needs work since it pushes the controls off screen)
         aspectRatio: { ideal: 4 / 3 },
         // Adjusted for 4K resolution so the browser will pick the highest resolution available
-        width: { max: 4096, ideal: 4096 },
-        height: { max: 4096, ideal: 4096 },
+        width: { max: MAX_CANVAS_DIMENSION, ideal: MAX_CANVAS_DIMENSION },
+        height: { max: MAX_CANVAS_DIMENSION, ideal: MAX_CANVAS_DIMENSION },
       },
     };
 
@@ -253,6 +256,98 @@ function Camera(props: CameraProps) {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
     }
+  }
+
+  function handleUpload(file?: File) {
+    if (!file) return;
+
+    const image = new Image();
+    image.src = URL.createObjectURL(file);
+    image.onload = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      stopCamera();
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+
+      const isImageLandscapeOrEqual =
+        image.width > image.height || image.width === image.height;
+      const frame = isImageLandscapeOrEqual
+        ? props.frame.landscape
+        : props.frame.portrait;
+
+      let frameWidthPx = frame.frameWidth;
+      let frameHeightPx = frame.frameHeight;
+
+      const frameAspectRatio = frameWidthPx / frameHeightPx;
+
+      if (
+        frameWidthPx > MAX_CANVAS_DIMENSION ||
+        frameHeightPx > MAX_CANVAS_DIMENSION
+      ) {
+        if (frameWidthPx > frameHeightPx) {
+          frameWidthPx = MAX_CANVAS_DIMENSION;
+          frameHeightPx = Math.round(frameWidthPx / frameAspectRatio);
+        } else {
+          frameHeightPx = MAX_CANVAS_DIMENSION;
+          frameWidthPx = Math.round(frameHeightPx * frameAspectRatio);
+        }
+      }
+
+      canvas.width = frameWidthPx;
+      canvas.height = frameHeightPx;
+
+      const scaleX = frameWidthPx / frame.frameWidth;
+      const scaleY = frameHeightPx / frame.frameHeight;
+
+      const outlineWidthPx = frame.outlineWidth * frame.frameWidth * scaleX;
+      const outlineHeightPx = frame.outlineHeight * frame.frameHeight * scaleY;
+      const outlineLeftPx = frame.outlineLeft * frame.frameWidth * scaleX;
+      const outlineTopPx = frame.outlineTop * frame.frameHeight * scaleY;
+
+      // Calculate dimensions for 'cover' behavior while maintaining aspect ratio
+      const imageAspectRatio = image.width / image.height;
+      const outlineAspectRatio = outlineWidthPx / outlineHeightPx;
+
+      let sx, sy, sw, sh;
+
+      const dw = outlineWidthPx;
+      const dh = outlineHeightPx;
+      const dx = outlineLeftPx;
+      const dy = outlineTopPx;
+
+      if (imageAspectRatio > outlineAspectRatio) {
+        // Image is wider than outline area (relative to height)
+        // Crop the sides of the image
+        sh = image.height;
+        sw = sh * outlineAspectRatio;
+        sy = 0;
+        sx = (image.width - sw) / 2; // Center the crop horizontally
+      } else {
+        // Image is taller than outline area (relative to width)
+        // Crop the top and bottom of the image
+        sw = image.width;
+        sh = sw / outlineAspectRatio;
+        sx = 0;
+        sy = (image.height - sh) / 2; // Center the crop vertically
+      }
+
+      ctx.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+
+      const frameImage = new Image();
+      frameImage.crossOrigin = "anonymous";
+      frameImage.src = frame.url;
+      frameImage.onload = () => {
+        ctx.drawImage(frameImage, 0, 0, canvas.width, canvas.height);
+        const imageData = canvas.toDataURL("image/jpeg");
+        props.setCapturedPhoto(imageData);
+      };
+    };
   }
 
   useEffect(() => {
@@ -291,6 +386,14 @@ function Camera(props: CameraProps) {
       className={`${styles.takePhotoWithFrameContainer} ${orientationDirectionStyle[deviceOrientation]}`}
       ref={elNodeRef}
     >
+      <div
+        className={cssClass({
+          [styles.header]: true,
+          [styles.iosMargin]: deviceIos !== null,
+        })}
+      >
+        <span className={styles.closeIcon} onClick={closeTakePhotoWithFrame} />
+      </div>
       <div className={styles.cameraWrapper}>
         <video
           ref={videoRef}
@@ -326,10 +429,20 @@ function Camera(props: CameraProps) {
         {`${test1}`}
       </div>
       <div className={styles.controls}>
-        <div
-          onClick={closeTakePhotoWithFrame}
-          className={`${styles.controlButton} ${styles.close}`}
-        />
+        <label>
+          <input
+            type="file"
+            accept="image/jpeg,image/png"
+            onChange={(e) => handleUpload(e.target.files?.[0])}
+            style={{ display: "none" }}
+          />
+          <span
+            className={cssClass({
+              [styles.controlButton]: true,
+              [styles.close]: true,
+            })}
+          />
+        </label>
         <div
           onClick={capturePhoto}
           className={`${styles.controlButton} ${styles.capture}`}
