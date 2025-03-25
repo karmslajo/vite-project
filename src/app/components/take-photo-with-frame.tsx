@@ -31,7 +31,6 @@ function Camera(props: CameraProps) {
 
   // Set max to 4096 due to ios canvas limitation to 4096 as of making this
   const MAX_CANVAS_DIMENSION = 4096;
-  const deviceIos = navigator.userAgent.match(/(iPad|iPhone|iPod)/g);
 
   const orientationDirectionStyle = {
     portraitPrimary: "",
@@ -388,14 +387,6 @@ function Camera(props: CameraProps) {
       className={`${styles.takePhotoWithFrameContainer} ${orientationDirectionStyle[deviceOrientation]}`}
       ref={elNodeRef}
     >
-      <div
-        className={cssClass({
-          [styles.header]: true,
-          [styles.iosMargin]: deviceIos !== null,
-        })}
-      >
-        <span className={styles.closeIcon} onClick={closeTakePhotoWithFrame} />
-      </div>
       <div className={styles.cameraWrapper}>
         <video
           ref={videoRef}
@@ -418,6 +409,20 @@ function Camera(props: CameraProps) {
             width: videoDimensions.width,
           }}
         />
+        <div
+          className={styles.frameCameraOverlay}
+          style={{
+            height: videoDimensions.height,
+            width: videoDimensions.width,
+          }}
+        >
+          <div className={styles.header}>
+            <span
+              className={styles.closeIcon}
+              onClick={closeTakePhotoWithFrame}
+            />
+          </div>
+        </div>
       </div>
       <div
         style={{

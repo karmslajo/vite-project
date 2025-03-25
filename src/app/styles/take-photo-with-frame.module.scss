@@ -128,16 +128,12 @@
 }
 
 .takePhotoWithFrameContainer {
-  @include common.flex-layout;
-  position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   width: 100vw;
   background-color: black;
   color: white;
-
-  // @media (orientation: landscape) {
-  //   flex-direction: row;
-  // }
 
   &.landscapePrimary {
     flex-direction: row;
@@ -145,36 +141,6 @@
 
   &.landscapeSecondary {
     flex-direction: row-reverse;
-  }
-
-  .header {
-    @include common.flex-layout(flex-end, center, flex, row);
-    width: 100% !important;
-
-    &.iosMargin {
-      padding-top: 15%;
-    }
-
-    @media (orientation: landscape) {
-      @include common.flex-layout(flex-start, center, flex, column);
-      height: 95%;
-      width: auto;
-
-      &.iosMargin {
-        padding-top: 0;
-      }
-    }
-
-    .closeIcon {
-      width: 20px;
-      height: 20px;
-      background: center / contain no-repeat;
-      background-image: url(close-icon-white.svg);
-      margin: 20px 20px;
-      background-color: red;
-
-      cursor: pointer;
-    }
   }
 
   .cameraWrapper {
@@ -198,6 +164,36 @@
     .frameOverlay {
       position: absolute;
       pointer-events: none;
+    }
+
+    .frameCameraOverlay {
+      @include common.flex-layout(flex-start);
+      position: absolute;
+
+      .header {
+        @include common.flex-layout(flex-end, center, flex, row);
+        width: 100%;
+
+        @media (orientation: landscape) {
+          @include common.flex-layout(flex-start, center, flex, row);
+        }
+
+        .closeIcon {
+          width: 25px;
+          height: 25px;
+          background: center / contain no-repeat;
+          background-image: url(/static/images/close-icon-white-black-transparent.svg);
+          margin: 15px 15px;
+          background-color: rgba(30, 30, 30, 0.75);
+          border-radius: 50px;
+
+          @media (orientation: landscape) {
+            margin: 10% 15px;
+          }
+
+          cursor: pointer;
+        }
+      }
     }
 
     .overlayMask {
