@@ -149,7 +149,7 @@
 
   .header {
     @include common.flex-layout(flex-end, center, flex, row);
-    width: 100%;
+    width: 100% !important;
 
     &.iosMargin {
       padding-top: 15%;
