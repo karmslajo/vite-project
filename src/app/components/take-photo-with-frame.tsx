@@ -229,8 +229,14 @@ function Camera(props: CameraProps) {
         // 1 (Square), 4:3 (Default), 16:9 (Rectangular, needs work since it pushes the controls off screen)
         aspectRatio: { ideal: 4 / 3 },
         // Adjusted for 4K resolution so the browser will pick the highest resolution available
-        width: { max: MAX_CANVAS_DIMENSION, ideal: MAX_CANVAS_DIMENSION },
-        height: { max: MAX_CANVAS_DIMENSION, ideal: MAX_CANVAS_DIMENSION },
+        width: {
+          max: MAX_CANVAS_DIMENSION,
+          ideal: isLandscape ? MAX_CANVAS_DIMENSION : MAX_CANVAS_DIMENSION,
+        },
+        height: {
+          max: MAX_CANVAS_DIMENSION,
+          ideal: isLandscape ? MAX_CANVAS_DIMENSION : MAX_CANVAS_DIMENSION,
+        },
       },
     };
 
@@ -248,8 +254,9 @@ function Camera(props: CameraProps) {
       cameraActive.current = false;
     }
 
+    updateOrientation();
     calculateVideoSize();
-  }, [calculateVideoSize, facingMode]);
+  }, [calculateVideoSize, facingMode, isLandscape, updateOrientation]);
 
   function stopCamera() {
     const stream = videoRef.current?.srcObject as MediaStream | null;
@@ -366,15 +373,10 @@ function Camera(props: CameraProps) {
       }
     }
 
-    function handleResize() {
-      updateOrientation();
-      startCamera();
-    }
-
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", startCamera);
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", startCamera);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [startCamera, updateOrientation]);
