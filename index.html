@@ -5,9 +5,20 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
+    <script src="node_modules/secure-web/dist/secure-web.js"></script>
+    <!--    live link of package -->
+    <script src="https://cdn.jsdelivr.net/npm/secure-web/dist/secure-web.js"></script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      window.onload = function() {
+          noScreenshot({
+            disablePrintScreen: true,
+            disableScreenshot: true,
+          }, 'custom-overlay-id');
+      };
+  </script>
   </body>
 </html>
